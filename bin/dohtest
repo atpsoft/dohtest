@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+require 'doh/options'
+require 'doh/test/master_runner'
+require 'doh/test/stream_output'
+
+opts = Doh::Options.new(
+{'grep' => [nil, "-g", "--grep <name>", "only execute tests with name that include the given value"] \
+,'glob' => ['*.dt.rb', "-b", "--glob <string>", "glob string to find test files"] \
+,'seed' => [nil, "-v", "--seed <number>", "random seed"] \
+}, true, 'Files or directories may be specified to run tests on.  Directories will be treated recursively.  Defaults to the current directory.')
+
+config = {}
+config[:grep] = opts.grep if opts.grep
+config[:glob] = opts.glob
+config[:seed] = opts.seed.to_i if opts.seed
+config[:paths] = (if opts.varargs.empty? then ['.'] else opts.varargs end)
+
+exit DohTest::MasterRunner.new(DohTest::StreamOutput.new, config).run
