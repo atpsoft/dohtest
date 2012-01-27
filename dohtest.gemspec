@@ -5,9 +5,10 @@ Gem::Specification.new do |s|
   s.version = '0.1.1'
   s.summary = 'Minimalist unit test framework.'
   s.description = %q{
-  This is a fairly straight forward replacement for minitest, though some changes to test code are required.
-  Code is intended to be easy to understand and extend. Includes command line runner to make execution convenient.
-  Designed for speed, including running tests concurrently (though as of this version that's not implemented).
+  Minimalist unit test framework, simple to migrate from test/unit.
+  Code is intended to be easy to understand and extend.
+  Includes command line runner to make execution convenient.
+  Designed for speed, including running tests concurrently (unimplemented).
   }
   s.require_path = 'lib'
   s.required_ruby_version = '>= 1.9.2'
