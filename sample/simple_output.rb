@@ -1,5 +1,8 @@
 require 'doh/test/backtrace_parser'
 
+# this class provides an example of how you could replace the built-in doh/test/stream_output class 
+# you could use the class below in the dohtest binary instead
+
 module DohTest
 
 class SimpleOutput
