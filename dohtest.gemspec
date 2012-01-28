@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.name = 'dohtest'
   s.version = '0.1.3'
   s.summary = 'minimalist unit test framework'
-  s.description = 'Minimalist unit test framework, simple to understand and extend.'
+  s.description = 'Minimalist unit test framework, easy to understand and extend.'
   s.require_path = 'lib'
   s.required_ruby_version = '>= 1.9.2'
 	s.add_runtime_dependency 'dohutil', '>= 0.1.0'
