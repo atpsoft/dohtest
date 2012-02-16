@@ -1,18 +1,20 @@
 #!/usr/bin/env ruby
 require 'doh/options'
+require 'doh/test/configure'
 require 'doh/test/master_runner'
 require 'doh/test/stream_output'
 
 opts = Doh::Options.new(
-{'grep' => [nil, "-g", "--grep <name>", "only execute tests with name that include the given value"] \
-,'glob' => ['*.dt.rb', "-b", "--glob <string>", "glob string to find test files"] \
-,'seed' => [nil, "-v", "--seed <number>", "random seed"] \
+{'grep' => [nil, "-g", "--grep <name>", "only execute tests with name that include the given value."] \
+,'glob' => [nil, "-b", "--glob <string>", "glob string to find test files. defaults to *.dt.rb"] \
+,'seed' => [nil, "-v", "--seed <number>", "use this as the seed to srand"] \
 }, true, 'Files or directories may be specified to run tests on.  Directories will be treated recursively.  Defaults to the current directory.')
 
-config = {}
-config[:grep] = opts.grep if opts.grep
-config[:glob] = opts.glob
-config[:seed] = opts.seed.to_i if opts.seed
-config[:paths] = (if opts.varargs.empty? then ['.'] else opts.varargs end)
+paths = (if opts.varargs.empty? then ['.'] else opts.varargs end)
 
-exit DohTest::MasterRunner.new(DohTest::StreamOutput.new, config).run
+DohTest::configure(paths[0])
+DohTest::config[:grep] = opts.grep if opts.grep
+DohTest::config[:glob] = opts.glob if opts.glob
+DohTest::config[:seed] = opts.seed.to_i if opts.seed
+
+exit DohTest::MasterRunner.new(DohTest::StreamOutput.new, DohTest::config, paths).run

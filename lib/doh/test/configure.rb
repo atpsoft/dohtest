@@ -2,7 +2,11 @@ require 'doh/root'
 
 module DohTest
 
-def self.configure(start_path)
+def self.config
+  @config ||= {}
+end
+
+def self.load_configuration_files(start_path)
   start_directory = File.dirname(start_path)
 
   root_directory = Doh::find_root(start_directory)
@@ -13,6 +17,16 @@ def self.configure(start_path)
 
   local_filename = Doh::findup(start_directory, 'configure_dohtest.rb')
   require(local_filename) if local_filename && File.exist?(local_filename)
+end
+
+def self.add_default_config_values
+  DohTest::config[:glob] ||= '*.dt.rb'
+  DohTest::config[:seed] ||= (Time.new.to_f * 1000).to_i
+end
+
+def self.configure(start_path)
+  load_configuration_files(start_path)
+  add_default_config_values
 end
 
 end
