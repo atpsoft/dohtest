@@ -30,7 +30,8 @@ class TestGroup
       yield
       no_exception = true
     rescue Exception => excpt
-      assert(args.include?(excpt.class), msg || "expected: #{args}; actual: #{excpt}")
+      expected_str = if (args.size == 1) then args.first else "one of #{args.join(',')}" end
+      assert(args.include?(excpt.class), msg || "expected: #{expected_str}; actual: #{excpt.class}: #{excpt.message}")
       return
     end
 
