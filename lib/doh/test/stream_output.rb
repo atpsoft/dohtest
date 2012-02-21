@@ -58,9 +58,13 @@ class StreamOutput
 
 private
   def display_badness(title, group_name, test_name, excpt, display_name)
-    warn "#{title} in #{group_name}.#{test_name} at #{DohTest::backtrace_summary(excpt)}"
+    parser = DohTest::BacktraceParser.new(excpt.backtrace)
+    main_call = parser.relevant_stack.last
+    warn "#{title} in #{group_name}.#{test_name}"
     badname = if display_name then "#{excpt.class}: " else '' end
     warn "=> #{badname}#{excpt}"
+    warn "=> #{main_call.first}:#{main_call.last}"
+    warn "=> #{parser.summary}"
   end
 end
 

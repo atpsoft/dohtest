@@ -17,11 +17,11 @@ class TestBacktraceParser < MiniTest::Unit::TestCase
   end
 
   def test_single_stack
-    location = DohTest::BacktraceParser.new(create_single_stack).summary
-    assert_equal("frog.rb:12", location)
+    parser = DohTest::BacktraceParser.new(create_single_stack)
+    assert_equal("frog.rb:12", parser.summary)
   end
 
-  def create_double_stack
+  def create_raw_double_stack
     retval = []
     retval << "/Users/somebody/dohtest/lib/doh/test/assertions.rb:10:in `assert'"
     retval << "/Users/somebody/tinker/test/frog.rb:5:in `verify_sum'"
@@ -30,9 +30,17 @@ class TestBacktraceParser < MiniTest::Unit::TestCase
     retval
   end
 
+  def create_relevant_double_stack
+    retval = []
+    retval << ['/Users/somebody/tinker/test/frog.rb', '5']
+    retval << ['/Users/somebody/tinker/test/frog.rb', '12']
+    retval
+  end
+
   def test_double_stack
-    location = DohTest::BacktraceParser.new(create_double_stack).summary
-    assert_equal("frog.rb:5,12", location)
+    parser = DohTest::BacktraceParser.new(create_raw_double_stack)
+    assert_equal(create_relevant_double_stack, parser.relevant_stack)
+    assert_equal("frog.rb:5,12", parser.summary)
   end
 
   def create_multifile_stack
@@ -45,8 +53,8 @@ class TestBacktraceParser < MiniTest::Unit::TestCase
   end
 
   def test_multifile_stack
-    location = DohTest::BacktraceParser.new(create_multifile_stack).summary
-    assert_equal("toad.rb:8;frog.rb:11", location)
+    parser = DohTest::BacktraceParser.new(create_multifile_stack)
+    assert_equal("toad.rb:8;frog.rb:11", parser.summary)
   end
 
   def create_duplicate_stack
@@ -58,8 +66,8 @@ class TestBacktraceParser < MiniTest::Unit::TestCase
   end
 
   def test_duplicate_stack
-    location = DohTest::BacktraceParser.new(create_duplicate_stack).summary
-    assert_equal("blee.rb:30", location)
+    parser = DohTest::BacktraceParser.new(create_duplicate_stack)
+    assert_equal("blee.rb:30", parser.summary)
   end
 
   def create_block_stack
@@ -69,8 +77,8 @@ class TestBacktraceParser < MiniTest::Unit::TestCase
   end
 
   def test_block_stack
-    location = DohTest::BacktraceParser.new(create_block_stack).summary
-    assert_equal("kblah.rb:3", location)
+    parser = DohTest::BacktraceParser.new(create_block_stack)
+    assert_equal("kblah.rb:3", parser.summary)
   end
 end
 

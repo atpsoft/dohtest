@@ -26,7 +26,9 @@ private
       else
         found_start = true
         info = location.rpartition(':in').first
-        retval << info
+        parts = info.partition(':')
+        raise "unexpected backtrace element: #{location}" if parts.first.nil? || parts.last.nil?
+        retval << [parts.first, parts.last]
       end
     end
     retval
@@ -36,15 +38,13 @@ private
     retval = ''
     prev_filename = ''
     prev_simplified = ''
-    relevant_stack.each do |location|
-      parts = location.partition(':')
-      filename = File.basename(parts.first)
-      simplified = "#{filename}:#{parts.last}"
-      raise "unexpected location format: #{location}" unless filename
+    relevant_stack.each do |path, line_number|
+      filename = File.basename(path)
+      simplified = "#{filename}:#{line_number}"
       if simplified == prev_simplified
         # ignore it
       elsif filename == prev_filename
-        retval += ",#{parts.last}"
+        retval += ",#{line_number}"
       elsif retval.empty?
         retval = simplified
       else
