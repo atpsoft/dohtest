@@ -13,10 +13,18 @@ class StreamOutput
     puts "running tests with config: #{config}"
   end
 
-  def run_end
+  def run_end(duration)
     total_assertions = @assertions_passed + @assertions_failed
-    puts "\n\n#@error_count errors, #@group_cnt groups, #@tests_ran tests, #{@tests_skipped} skipped, #{total_assertions} assertions, #@assertions_passed passed, #@assertions_failed failed"
-    puts "completed in 0.043702s, 22.8822 tests/s, 45.7645 assertions/s <TODO: put real values here>"
+
+    if duration >= 1
+      tests_per_second = (@tests_ran / duration).round(2)
+      assertions_per_second = (total_assertions / duration).round(2)
+      puts "\n\ncompleted in #{duration.round(2)}s, #{tests_per_second} tests/s, #{assertions_per_second} assertions/s"
+    else
+      puts "\n\ncompleted in #{duration.round(2)}s"
+    end
+    puts "#@error_count errors, #@group_cnt groups, #@tests_ran tests, #{@tests_skipped} skipped, #{total_assertions} assertions, #@assertions_passed passed, #@assertions_failed failed"
+
     # this is to generate an exit code; true translates to 0, false to 1
     @error_count == 0 && @assertions_failed == 0
   end

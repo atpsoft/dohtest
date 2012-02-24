@@ -1,17 +1,17 @@
 require 'doh/test/backtrace_parser'
 
-# this class provides an example of how you could replace the built-in doh/test/stream_output class 
+# this class provides an example of how you could replace the built-in doh/test/stream_output class
 # you could use the class below in the dohtest binary instead
 
 module DohTest
 
 class SimpleOutput
-  def run_begin
-    puts "run begin"
+  def run_begin(config)
+    puts "run begin: #{config}"
   end
 
-  def run_end
-    puts "run end"
+  def run_end(duration)
+    puts "run end: #{duration}"
   end
 
   def group_begin(group_name)
