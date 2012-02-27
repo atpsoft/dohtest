@@ -8,6 +8,10 @@ class GroupRunner
     @config = config || {}
     @group_name = @group_class.to_s
     @group_failed = false
+    @tests_ran = 0
+    @tests_skipped = 0
+    @assertions_passed = 0
+    @assertions_failed = 0
   end
 
   def run
@@ -16,7 +20,7 @@ class GroupRunner
     run_before_all unless @group_failed
     run_tests unless @group_failed
     run_after_all unless @group_failed
-    @output.group_end(@group_name)
+    @output.group_end(@group_name, @tests_ran, @tests_skipped, @assertions_passed, @assertions_failed)
   end
 
   def create_group
@@ -52,9 +56,11 @@ class GroupRunner
         @group.send(:before_each) if has_before_each
         @output.test_begin(@group_name, @test_name)
         @group.send(@test_name)
+        @tests_ran += 1
         @output.test_end(@group_name, @test_name)
         @group.send(:after_each) if has_after_each
       rescue DohTest::AssertionFailed => failure
+        @assertions_failed += 1
         @output.assertion_failed(@group_name, @test_name, failure)
       rescue => error
         @output.test_error(@group_name, @test_name, error)
@@ -64,14 +70,15 @@ class GroupRunner
 
   def determine_test_methods
     @test_methods = @group_class.public_instance_methods.grep(/^test/)
-    original_test_count = @test_methods.size
     return unless @config.key?(:grep)
+    original_test_count = @test_methods.size
     grep_filter = Regexp.new(@config[:grep])
     @test_methods.select! { |method| name.to_s =~ grep_filter }
-    @output.tests_skipped(@group_name, original_test_count - @test_methods.size)
+    @tests_skipped = original_test_count - @test_methods.size
   end
 
   def assertion_passed
+    @assertions_passed += 1
     @output.assertion_passed(@group_name, @test_name)
   end
 end

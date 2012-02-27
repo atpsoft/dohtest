@@ -5,7 +5,7 @@ module DohTest
 
 class StreamOutput
   def initialize
-    @error_count = @group_cnt = @tests_ran = @tests_skipped = @assertions_failed = @assertions_passed = 0
+    @error_count = @groups_ran = @groups_skipped = @tests_ran = @tests_skipped = @assertions_failed = @assertions_passed = 0
     @badness = Set.new
   end
 
@@ -23,22 +23,46 @@ class StreamOutput
     else
       puts "\n\ncompleted in #{duration.round(2)}s"
     end
-    puts "#@error_count errors, #@group_cnt groups, #@tests_ran tests, #{@tests_skipped} skipped, #{total_assertions} assertions, #@assertions_passed passed, #@assertions_failed failed"
+
+    if @groups_skipped == 0
+      groups_str = "#@groups_ran groups"
+    else
+      total_groups = @groups_ran + @groups_skipped
+      groups_str = "#{total_groups} groups: #@groups_ran ran, #@groups_skipped skipped"
+    end
+
+    if @tests_skipped == 0
+      tests_str = "#@tests_ran tests"
+    else
+      total_tests = @tests_ran + @tests_skipped
+      tests_str = "#{total_tests} tests: #@tests_ran ran, #@tests_skipped skipped"
+    end
+
+    if @assertions_failed == 0
+      assertions_str = "all #{total_assertions} assertions passed"
+    else
+      assertions_str = "#{total_assertions} assertions: #@assertions_passed passed, #@assertions_failed failed"
+    end
+    puts "#@error_count errors; #{groups_str}; #{tests_str}; #{assertions_str}"
 
     # this is to generate an exit code; true translates to 0, false to 1
     @error_count == 0 && @assertions_failed == 0
   end
 
   def group_begin(group_name)
-    @group_cnt += 1
   end
 
-  def group_end(group_name)
-    puts "success in #{group_name}" unless @badness.include?(group_name)
-  end
-
-  def tests_skipped(group_name, count)
-    @tests_skipped += count
+  def group_end(group_name, tests_ran, tests_skipped, assertions_passed, assertions_failed)
+    @tests_skipped += tests_skipped
+    if tests_ran == 0
+      @groups_skipped += 1
+      return
+    end
+    @groups_ran += 1
+    total_tests = tests_ran + tests_skipped
+    total_assertions = assertions_passed + assertions_failed
+    skipped_str = if tests_skipped > 0 then ": #{tests_ran} ran, #{tests_skipped} skipped" else '' end
+    puts "success in #{group_name}: #{total_tests} tests#{skipped_str}; #{total_assertions} assertions" unless @badness.include?(group_name)
   end
 
   def test_begin(group_name, test_name)
