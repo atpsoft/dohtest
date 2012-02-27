@@ -73,7 +73,7 @@ class GroupRunner
     return unless @config.key?(:grep)
     original_test_count = @test_methods.size
     grep_filter = Regexp.new(@config[:grep])
-    @test_methods.select! { |method| name.to_s =~ grep_filter }
+    @test_methods.select! { |method| method.to_s =~ grep_filter }
     @tests_skipped = original_test_count - @test_methods.size
   end
 
