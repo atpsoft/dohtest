@@ -18,12 +18,8 @@ class SimpleOutput
     puts "group begin: #{group_name}"
   end
 
-  def group_end(group_name)
-    puts "group end: #{group_name}"
-  end
-
-  def tests_skipped(group_name, count)
-    puts "tests skipped: group #{group_name}, count #{count}"
+  def group_end(group_name, tests_ran, tests_skipped, assertions_passed, assertions_failed)
+    puts "group end: #{group_name}; #{tests_ran} tests ran, #{tests_skipped} tests skipped, assertions passed #{assertions_passed}, assertions failed #{assertions_failed}"
   end
 
   def test_begin(group_name, test_name)
