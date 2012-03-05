@@ -13,7 +13,9 @@ class MasterRunner
     DohTest::require_paths(@config[:glob], @paths)
     srand(@config[:seed])
     @output.run_begin(@config)
-    TestGroup.descendants.each { |group_class| GroupRunner.new(group_class, @output, @config).run }
+    TestGroup.descendants.each do |group_class|
+      break if GroupRunner.new(group_class, @output, @config).run
+    end
     @output.run_end(Time.now - start_time)
   end
 end

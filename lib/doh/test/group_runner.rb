@@ -8,10 +8,7 @@ class GroupRunner
     @config = config || {}
     @group_name = @group_class.to_s
     @before_all_failed = false
-    @tests_ran = 0
-    @tests_skipped = 0
-    @assertions_passed = 0
-    @assertions_failed = 0
+    @error_count = @tests_ran = @tests_skipped = @assertions_failed = @assertions_passed = 0
   end
 
   def run
@@ -22,12 +19,13 @@ class GroupRunner
       run_after_all
     end
     @output.group_end(@group_name, @tests_ran, @tests_skipped, @assertions_passed, @assertions_failed)
+    past_brink?
   end
 
   def create_group
     @group = @group_class.new
   rescue => error
-    @output.test_error(@group_name, 'initialize', error)
+    caught_error(error, 'initialize')
     false
   else
     @group.runner = self
@@ -38,13 +36,13 @@ class GroupRunner
     @group.before_all if @group.respond_to?(:before_all)
   rescue => error
     @before_all_failed = true
-    @output.test_error(@group_name, 'before_all', error)
+    caught_error(error, 'before_all')
   end
 
   def run_after_all
     @group.after_all if @group.respond_to?(:after_all)
   rescue => error
-    @output.test_error(@group_name, 'after_all', error)
+    caught_error(error, 'after_all')
   end
 
   def find_before_each_method
@@ -79,13 +77,13 @@ class GroupRunner
     @group.send(@before_each_method)
   rescue => error
     @before_each_failed = true
-    @output.test_error(@group_name, @test_name, error)
+    caught_error(error)
   end
 
   def run_after_each
     @group.send(@after_each_method)
   rescue => error
-    @output.test_error(@group_name, @test_name, error)
+    caught_error(error)
   end
 
   def run_test_method
@@ -94,15 +92,27 @@ class GroupRunner
     @assertions_failed += 1
     @output.assertion_failed(@group_name, @test_name, failure)
   rescue => error
-    @output.test_error(@group_name, @test_name, error)
+    caught_error(error)
+  end
+
+  def setup_brink
+    @max_errors = if @config.key?(:max_errors) then @config[:max_errors].to_i else nil end
+    @max_failures = if @config.key?(:max_failures) then @config[:max_failures].to_i else nil end
+    @has_brink = @max_errors || @max_failures
+  end
+
+  def past_brink?
+    (@max_errors && (@error_count > @max_errors)) || (@max_failures && (@assertions_failed > @max_failures))
   end
 
   def run_tests
     determine_test_methods
     find_before_each_method
     find_after_each_method
+    setup_brink
 
     @test_methods.each do |method_name|
+      break if @has_brink && past_brink?
       @test_name = method_name
       @before_each_failed = false
       @output.test_begin(@group_name, @test_name)
@@ -126,6 +136,11 @@ class GroupRunner
   def assertion_passed
     @assertions_passed += 1
     @output.assertion_passed(@group_name, @test_name)
+  end
+
+  def caught_error(error, test_name = nil)
+    @error_count += 1
+    @output.test_error(@group_name, test_name || @test_name, error)
   end
 end
 
