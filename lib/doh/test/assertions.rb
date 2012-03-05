@@ -19,17 +19,17 @@ class TestGroup
     end
   end
 
-  def assert_raises(*args)
-    msg = args.pop if args.last.is_a?(String)
+  def assert_raises(*expected)
+    msg = expected.pop if expected.last.is_a?(String)
     begin
       yield
       no_exception = true
-    rescue Exception => excpt
-      actual = excpt.class
-      if args.include?(actual)
+    rescue Exception => actual_excpt
+      actual_class = actual_excpt.class
+      if expected.any? { |elem| elem.instance_of?(Module) ? actual_excpt.kind_of?(elem) : elem == actual_class }
         @runner.assertion_passed
       else
-        raise DohTest::Failure.new(msg, :raises, expected, actual)
+        raise DohTest::Failure.new(msg, :raises, expected, actual_class)
       end
     end
     raise DohTest::Failure.new(msg, :raises, expected, nil) if no_exception
