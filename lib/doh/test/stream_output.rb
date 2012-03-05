@@ -98,7 +98,7 @@ private
     # warn "=> #{main_call.first}:#{main_call.last}"
     # warn "=> #{parser.summary}"
     parser.relevant_stack.each do |path, line|
-      warn "=> #{path}:#{line}"
+      warn "#{path}:#{line}"
     end
   end
 end
