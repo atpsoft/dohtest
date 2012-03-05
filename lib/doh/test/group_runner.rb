@@ -88,7 +88,7 @@ class GroupRunner
 
   def run_test_method
     @group.send(@test_name)
-  rescue DohTest::AssertionFailed => failure
+  rescue DohTest::Failure => failure
     @assertions_failed += 1
     @output.assertion_failed(@group_name, @test_name, failure)
   rescue => error

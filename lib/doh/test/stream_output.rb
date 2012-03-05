@@ -75,13 +75,13 @@ class StreamOutput
   def test_error(group_name, test_name, error)
     @badness.add(group_name)
     @error_count += 1
-    display_badness('error', group_name, test_name, error, true)
+    display_badness(group_name, test_name, error)
   end
 
   def assertion_failed(group_name, test_name, failure)
     @badness.add(group_name)
     @assertions_failed += 1
-    display_badness('failure', group_name, test_name, failure, false)
+    display_badness(group_name, test_name, failure)
   end
 
   def assertion_passed(group_name, test_name)
@@ -89,18 +89,61 @@ class StreamOutput
   end
 
 private
-  def display_badness(title, group_name, test_name, excpt, display_name)
+  def display_badness(group_name, test_name, excpt)
+    badness_type = if excpt.is_a?(DohTest::Failure) then :failure else :error end
     parser = DohTest::BacktraceParser.new(excpt.backtrace)
-    warn "#{title} in #{group_name}.#{test_name}"
-    badname = if display_name then "#{excpt.class}: " else '' end
-    warn "=> #{badname}#{excpt}"
-    # main_call = parser.relevant_stack.last
-    # warn "=> #{main_call.first}:#{main_call.last}"
-    # warn "=> #{parser.summary}"
+    warn "#{badness_type} in #{group_name}.#{test_name}"
+    if badness_type == :error
+      warn "#{excpt.class}: #{excpt}"
+    else
+      display_failure_message(excpt)
+    end
     parser.relevant_stack.each do |path, line|
       warn "#{path}:#{line}"
     end
   end
+
+  def display_failure_message(failure)
+    if failure.message.empty?
+      warn send("display_#{failure.assert}_failure", failure)
+    else
+      warn failure.message
+    end
+  end
+
+  def display_boolean_failure(failure)
+    "assertion failed"
+  end
+
+  def display_equal_failure(failure)
+    if (failure.expected.to_s.size + failure.actual.to_s.size) < 50
+      "expected: #{failure.expected}; actual: #{failure.actual}"
+    else
+      "\nexpected: #{failure.expected}\n  actual: #{failure.actual}"
+    end
+  end
+
+  def display_raises_failure(failure)
+    if failure.actual
+      expected_str = if (failure.expected.size == 1) then failure.expected.first else "one of #{failure.expected.join(',')}" end
+      "expected: #{expected_str}; actual: #{failure.actual.class}: #{failure.actual.message}"
+    else
+      "expected: #{failure.expected}, but no exception was raised"
+    end
+  end
+
+  def display_instance_of_failure(failure)
+    "expected class: #{failure.expected}; actual: #{failure.actual}"
+  end
+
+  def display_match_failure(failure)
+    "expected regex #{failure.expected} to match str: #{failure.actual}"
+  end
+
+  def display_not_equal_failure(failure)
+    "expected unequal values; both are: #{failure.expected}"
+  end
+
 end
 
 end

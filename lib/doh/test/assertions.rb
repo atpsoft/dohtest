@@ -1,55 +1,62 @@
+require 'doh/test/failure'
+
 module DohTest
 
-AssertionFailed = Class.new(StandardError)
-
 class TestGroup
-  def assert(condition, msg = nil)
-    if condition
+  def assert(boolean, msg = nil)
+    if boolean
       @runner.assertion_passed
     else
-      raise DohTest::AssertionFailed, msg || "Assertion failed."
-    end
-  end
-
-  def build_equal_msg(expected, actual)
-    if (expected.to_s.size + actual.to_s.size) < 50
-      "expected: #{expected}; actual: #{actual}"
-    else
-      "\nexpected: #{expected}\n  actual: #{actual}"
+      raise DohTest::Failure.new(msg, :boolean, nil, nil)
     end
   end
 
   def assert_equal(expected, actual, msg = nil)
-    assert(expected == actual, msg || build_equal_msg(expected, actual))
+    if expected == actual
+      @runner.assertion_passed
+    else
+      raise DohTest::Failure.new(msg, :equal, expected, actual)
+    end
   end
 
   def assert_raises(*args)
     msg = args.pop if args.last.is_a?(String)
-
     begin
       yield
       no_exception = true
     rescue Exception => excpt
-      expected_str = if (args.size == 1) then args.first else "one of #{args.join(',')}" end
-      assert(args.include?(excpt.class), msg || "expected: #{expected_str}; actual: #{excpt.class}: #{excpt.message}")
-      return
+      actual = excpt.class
+      if args.include?(actual)
+        @runner.assertion_passed
+      else
+        raise DohTest::Failure.new(msg, :raises, expected, actual)
+      end
     end
-
-    if no_exception
-      raise DohTest::AssertionFailed, msg || "expected: #{args}, but no exception was raised"
-    end
+    raise DohTest::Failure.new(msg, :raises, expected, nil) if no_exception
   end
 
   def assert_instance_of(expected_class, actual_object, msg = nil)
-    assert(actual_object.instance_of?(expected_class), msg || "expected class: #{expected_class}; actual: #{actual_object.class}")
+    if actual_object.instance_of?(expected_class)
+      @runner.assertion_passed
+    else
+      raise DohTest::Failure.new(msg, :instance_of, expected_class, actual_object)
+    end
   end
 
   def assert_match(expected_regex, actual_str, msg = nil)
-    assert(actual_str.match(expected_regex), msg || "expected regex #{expected_regex} to match str: #{actual_str}")
+    if actual_str.match(expected_regex)
+      @runner.assertion_passed
+    else
+      raise DohTest::Failure.new(msg, :match, expected_regex, actual_str)
+    end
   end
 
   def assert_not_equal(expected, actual, msg = nil)
-    assert(expected != actual, msg || "expected unequal values")
+    if expected != actual
+      @runner.assertion_passed
+    else
+      raise DohTest::Failure.new(msg, :not_equal, expected, actual)
+    end
   end
 end
 
