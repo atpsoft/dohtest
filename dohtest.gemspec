@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.required_ruby_version = '>= 1.9.2'
   s.add_runtime_dependency 'dohroot', '>= 0.1.0'
+  s.add_runtime_dependency 'term-ansicolor', '>= 1.0.7'
   s.authors = ['Makani Mason', 'Kem Mason']
   s.bindir = 'bin'
   s.homepage = 'https://github.com/atpsoft/dohtest'

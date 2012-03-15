@@ -1,15 +1,19 @@
 require 'doh/test/backtrace_parser'
 require 'set'
+require 'term/ansicolor'
 
 module DohTest
 
 class StreamOutput
+  DEFAULT_COLORS = {:failure => :red, :error => :magenta, :info => :blue, :success => :green}.freeze
+
   def initialize
     @error_count = @groups_ran = @groups_skipped = @tests_ran = @tests_skipped = @assertions_failed = @assertions_passed = 0
     @badness = Set.new
   end
 
   def run_begin(config)
+    @config = config
     puts "running tests with config: #{config}"
   end
 
@@ -24,29 +28,43 @@ class StreamOutput
       puts "\n\ncompleted in #{duration.round(2)}s"
     end
 
+    if @error_count == 0
+      error_str = "0 errors"
+    else
+      error_str = colorize(:error, "#@error_count errors")
+    end
+
     if @groups_skipped == 0
-      groups_str = "#@groups_ran groups"
+      group_str = "#@groups_ran groups"
     else
       total_groups = @groups_ran + @groups_skipped
-      groups_str = "#{total_groups} groups: #@groups_ran ran, #@groups_skipped skipped"
+      group_str = "#{total_groups} groups: #@groups_ran ran, #@groups_skipped skipped"
     end
 
     if @tests_skipped == 0
-      tests_str = "#@tests_ran tests"
+      test_str = "#@tests_ran tests"
     else
       total_tests = @tests_ran + @tests_skipped
-      tests_str = "#{total_tests} tests: #@tests_ran ran, #@tests_skipped skipped"
+      test_str = "#{total_tests} tests: #@tests_ran ran, #@tests_skipped skipped"
     end
 
-    if @assertions_failed == 0
-      assertions_str = "all #{total_assertions} assertions passed"
+    if total_assertions == 0
+      assertion_str = colorize(:info, "no assertions run")
+    elsif @assertions_failed == 0
+      assertion_str = "all #{total_assertions} assertions passed"
     else
-      assertions_str = "#{total_assertions} assertions: #@assertions_passed passed, #@assertions_failed failed"
+      failed_str = colorize(:failure, "#@assertions_failed failed")
+      assertion_str = "#{total_assertions} assertions: #@assertions_passed passed, #{failed_str}"
     end
-    puts "#@error_count errors; #{groups_str}; #{tests_str}; #{assertions_str}"
+
+    success = (total_assertions > 0) && (@error_count == 0) && (@assertions_failed == 0)
+
+    msg = "#{error_str}; #{group_str}; #{test_str}; #{assertion_str}"
+    msg = colorize(:success, msg) if success
+    puts msg
 
     # this is to generate an exit code; true translates to 0, false to 1
-    @error_count == 0 && @assertions_failed == 0
+    success
   end
 
   def group_begin(group_name)
@@ -89,12 +107,17 @@ class StreamOutput
   end
 
 private
+  def colorize(type, msg)
+    color = @config["#{type}_color".to_sym] || DEFAULT_COLORS[type]
+    "#{Term::ANSIColor.send(color)}#{msg}#{Term::ANSIColor.clear}"
+  end
+
   def display_badness(group_name, test_name, excpt)
     badness_type = if excpt.is_a?(DohTest::Failure) then :failure else :error end
     parser = DohTest::BacktraceParser.new(excpt.backtrace)
-    warn "#{badness_type} in #{group_name}.#{test_name}"
+    warn colorize(badness_type, "#{badness_type} in #{group_name}.#{test_name}")
     if badness_type == :error
-      warn "#{excpt.class}: #{excpt}"
+      warn colorize(:info, "#{excpt.class}: #{excpt}")
     else
       display_failure_message(excpt)
     end
@@ -105,10 +128,11 @@ private
 
   def display_failure_message(failure)
     if failure.message.empty?
-      warn send("display_#{failure.assert}_failure", failure)
+      msg = send("display_#{failure.assert}_failure", failure)
     else
-      warn failure.message
+      msg = failure.message
     end
+    warn colorize(:info, msg)
   end
 
   def display_boolean_failure(failure)
