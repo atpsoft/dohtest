@@ -115,57 +115,59 @@ private
   def display_badness(group_name, test_name, excpt)
     badness_type = if excpt.is_a?(DohTest::Failure) then :failure else :error end
     parser = DohTest::BacktraceParser.new(excpt.backtrace)
-    warn colorize(badness_type, "#{badness_type} in #{group_name}.#{test_name}")
+    warn colorize(badness_type, "#{badness_type} in #{group_name}.#{test_name} at:")
+    parser.relevant_stack.each do |path, line|
+      warn "#{path}:#{line}"
+    end
     if badness_type == :error
       warn colorize(:info, "#{excpt.class}: #{excpt}")
     else
       display_failure_message(excpt)
     end
-    parser.relevant_stack.each do |path, line|
-      warn "#{path}:#{line}"
-    end
   end
 
   def display_failure_message(failure)
     if failure.message.empty?
-      msg = send("display_#{failure.assert}_failure", failure)
+      send("display_#{failure.assert}_failure", failure)
     else
-      msg = failure.message
+      warn colorize(:info, failure.message)
     end
-    warn colorize(:info, msg)
   end
 
   def display_boolean_failure(failure)
-    "assertion failed"
+    warn colorize(:info, "assertion failed")
   end
 
   def display_equal_failure(failure)
     if (failure.expected.to_s.size + failure.actual.to_s.size) < 50
-      "expected: #{failure.expected}; actual: #{failure.actual}"
+      warn colorize(:info, "expected: #{failure.expected}; actual: #{failure.actual}")
     else
-      "\nexpected: #{failure.expected}\n  actual: #{failure.actual}"
+      warn colorize(:info, "\nexpected: #{failure.expected}\n  actual: #{failure.actual}")
     end
   end
 
   def display_raises_failure(failure)
     if failure.actual
       expected_str = if (failure.expected.size == 1) then failure.expected.first else "one of #{failure.expected.join(',')}" end
-      "expected: #{expected_str}; actual: #{failure.actual.class}: #{failure.actual.message}"
+      warn colorize(:info, "expected: #{expected_str}; actual: #{failure.actual.class}: #{failure.actual.message}")
+      DohTest::BacktraceParser.new(failure.actual.backtrace).relevant_stack.each do |path, line|
+        warn "#{path}:#{line}"
+      end
     else
-      "expected: #{failure.expected}, but no exception was raised"
+      warn colorize(:info, "expected: #{failure.expected}, but no exception was raised")
     end
   end
 
   def display_instance_of_failure(failure)
-    "expected class: #{failure.expected}; actual: #{failure.actual}"
+    warn colorize(:info, "expected class: #{failure.expected}; actual: #{failure.actual}")
   end
 
   def display_match_failure(failure)
-    "expected regex #{failure.expected} to match str: #{failure.actual}"
+    warn colorize(:info, "expected regex #{failure.expected} to match str: #{failure.actual}")
   end
 
   def display_not_equal_failure(failure)
-    "expected unequal values; both are: #{failure.expected}"
+    warn colorize(:info, "expected unequal values; both are: #{failure.expected}")
   end
 
 end
