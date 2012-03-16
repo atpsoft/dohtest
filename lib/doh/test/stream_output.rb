@@ -109,7 +109,7 @@ class StreamOutput
 private
   def colorize(type, msg)
     color = @config["#{type}_color".to_sym] || DEFAULT_COLORS[type]
-    "#{Term::ANSIColor.send(color)}#{msg}#{Term::ANSIColor.clear}"
+    "#{Term::ANSIColor.send(color)}#{Term::ANSIColor.bold}#{msg}#{Term::ANSIColor.clear}"
   end
 
   def display_badness(group_name, test_name, excpt)
