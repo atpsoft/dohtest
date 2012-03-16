@@ -29,7 +29,7 @@ class TestGroup
       if expected.any? { |elem| elem.instance_of?(Module) ? actual_excpt.kind_of?(elem) : elem == actual_class }
         @runner.assertion_passed
       else
-        raise DohTest::Failure.new(msg, :raises, expected, actual_class)
+        raise DohTest::Failure.new(msg, :raises, expected, actual_excpt)
       end
     end
     raise DohTest::Failure.new(msg, :raises, expected, nil) if no_exception
