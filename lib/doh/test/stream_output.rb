@@ -120,7 +120,7 @@ private
       warn "#{path}:#{line}"
     end
     if badness_type == :error
-      warn colorize(:info, "#{excpt.class}: #{excpt}")
+      warn colorize(:info, "#{excpt.class}: #{excpt.message}")
     else
       display_failure_message(excpt)
     end
