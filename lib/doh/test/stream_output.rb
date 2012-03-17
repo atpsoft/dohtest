@@ -139,11 +139,7 @@ private
   end
 
   def display_equal_failure(failure)
-    if (failure.expected.to_s.size + failure.actual.to_s.size) < 50
-      warn colorize(:info, "expected: #{failure.expected}; actual: #{failure.actual}")
-    else
-      warn colorize(:info, "\nexpected: #{failure.expected}\n  actual: #{failure.actual}")
-    end
+    warn colorize(:info, "expected: #{failure.expected}\n  actual: #{failure.actual}")
   end
 
   def display_raises_failure(failure)
