@@ -73,7 +73,11 @@ class StreamOutput
   def group_end(group_name, tests_ran, tests_skipped, assertions_passed, assertions_failed)
     @tests_skipped += tests_skipped
     if tests_ran == 0
-      @groups_skipped += 1
+      if tests_skipped > 0
+        @groups_skipped += 1
+      else
+        puts colorize(:info, "no tests defined in #{group_name}")
+      end
       return
     end
     @groups_ran += 1
