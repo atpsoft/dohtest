@@ -112,6 +112,7 @@ class StreamOutput
 
 private
   def colorize(type, msg)
+    return msg if @config[:no_color]
     color = @config["#{type}_color".to_sym] || DEFAULT_COLORS[type]
     "#{Term::ANSIColor.send(color)}#{Term::ANSIColor.bold}#{msg}#{Term::ANSIColor.clear}"
   end

@@ -4,10 +4,11 @@ require 'doh/test/configure'
 require 'doh/test/master_runner'
 require 'doh/test/stream_output'
 
-opts = Doh::Options.new(
-{'grep' => [nil, "-g", "--grep <name>", "only execute tests with name that include the given value."] \
-,'glob' => [nil, "-b", "--glob <string>", "glob string to find test files. defaults to *.dt.rb"] \
-,'seed' => [nil, "-v", "--seed <number>", "use this as the seed to srand"] \
+opts = Doh::Options.new({
+'grep' => [nil, "-g", "--grep <name>", "only execute tests with name that include the given value."],
+'glob' => [nil, "-b", "--glob <string>", "glob string to find test files. defaults to *.dt.rb"],
+'seed' => [nil, "-v", "--seed <number>", "use this as the seed to srand"],
+'no_color' => [nil, '-c', '--no_color', "use this if you don't want ANSI color codes"],
 }, true, 'Files or directories may be specified to run tests on.  Directories will be treated recursively.  Defaults to the current directory.')
 
 paths = (if opts.varargs.empty? then ['.'] else opts.varargs end)
@@ -16,5 +17,6 @@ DohTest::configure(paths[0])
 DohTest::config[:grep] = opts.grep if opts.grep
 DohTest::config[:glob] = opts.glob if opts.glob
 DohTest::config[:seed] = opts.seed.to_i if opts.seed
+DohTest::config[:no_color] = true if opts.no_color
 
 exit DohTest::MasterRunner.new(DohTest::StreamOutput.new, DohTest::config, paths).run
