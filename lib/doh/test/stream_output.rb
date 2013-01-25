@@ -144,7 +144,7 @@ private
   end
 
   def display_equal_failure(failure)
-    warn colorize(:info, "expected: #{failure.expected}\n  actual: #{failure.actual}")
+    warn colorize(:info, "expected: #{failure.expected.inspect}\n  actual: #{failure.actual.inspect}")
   end
 
   def display_raises_failure(failure)
@@ -160,7 +160,7 @@ private
   end
 
   def display_instance_of_failure(failure)
-    warn colorize(:info, "expected class: #{failure.expected}; actual: #{failure.actual}")
+    warn colorize(:info, "expected class: #{failure.expected}; actual class: #{failure.actual.class}, object: #{failure.actual}")
   end
 
   def display_match_failure(failure)
@@ -168,7 +168,7 @@ private
   end
 
   def display_not_equal_failure(failure)
-    warn colorize(:info, "expected unequal values; both are: #{failure.expected}")
+    warn colorize(:info, "expected unequal values; both are: #{failure.expected.inspect}")
   end
 
 end
