@@ -1,0 +1,9 @@
+#!/bin/bash
+
+result=0
+
+while [ $result -eq 0 ]
+do
+  dohtest "$@"
+  result=$?
+done
