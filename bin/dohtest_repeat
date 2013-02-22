@@ -1,9 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env ruby
 
-result=0
-
-while [ $result -eq 0 ]
-do
-  dohtest "$@"
-  result=$?
-done
+cmd = "dohtest #{ARGV.join(' ')}"
+while(system(cmd)) do
+end
