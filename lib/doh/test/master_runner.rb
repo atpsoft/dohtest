@@ -17,7 +17,11 @@ class MasterRunner
     TestGroup.descendants.each do |group_class|
       break if GroupRunner.new(group_class, @output, @config).run
     end
-    @config[:post_test_callback].call() if @config[:post_test_callback]
+    if @config[:post_test_callback]
+      if (!@config[:post_test_callback].call())
+        @output.test_error("PostTestCallback", proc.inspect, "failure")
+      end
+    end
     @output.run_end(Time.now - start_time)
   end
 end
