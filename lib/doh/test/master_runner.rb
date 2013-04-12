@@ -19,7 +19,7 @@ class MasterRunner
     end
     if @config[:post_test_callback]
       if (!@config[:post_test_callback].call())
-        @output.test_error("PostTestCallback", proc.inspect, "failure")
+        @output.callback_failed(@config[:post_test_callback].inspect)
       end
     end
     @output.run_end(Time.now - start_time)

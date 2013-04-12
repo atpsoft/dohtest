@@ -9,6 +9,7 @@ class StreamOutput
 
   def initialize
     @error_count = @groups_ran = @groups_skipped = @tests_ran = @tests_skipped = @assertions_failed = @assertions_passed = 0
+    @callback_succeeded = true
     @badness = Set.new
   end
 
@@ -57,7 +58,7 @@ class StreamOutput
       assertion_str = "#{total_assertions} assertions: #@assertions_passed passed, #{failed_str}"
     end
 
-    success = (total_assertions > 0) && (@error_count == 0) && (@assertions_failed == 0)
+    success = (total_assertions > 0) && (@error_count == 0) && (@assertions_failed == 0) && @callback_succeeded
 
     msg = "#{error_str}; #{group_str}; #{test_str}; #{assertion_str}"
     msg = colorize(:success, msg) if success
@@ -104,6 +105,11 @@ class StreamOutput
     @badness.add(group_name)
     @assertions_failed += 1
     display_badness(group_name, test_name, failure)
+  end
+
+  def callback_failed(test_name)
+    @callback_succeeded = false
+    warn colorize(:error, "callback #{test_name} failed")
   end
 
   def assertion_passed(group_name, test_name)
