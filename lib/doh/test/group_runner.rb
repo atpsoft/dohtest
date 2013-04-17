@@ -34,6 +34,12 @@ class GroupRunner
 
   def run_before_all
     @group.before_all if @group.respond_to?(:before_all)
+    if @config[:pre_group_callback]
+      if (!@config[:pre_group_callback].call())
+        @error_count += 1
+        @output.callback_failed(@config[:post_group_callback].inspect)
+      end
+    end
   rescue => error
     @before_all_failed = true
     caught_error(error, 'before_all')
@@ -41,6 +47,12 @@ class GroupRunner
 
   def run_after_all
     @group.after_all if @group.respond_to?(:after_all)
+    if @config[:post_group_callback]
+      if (!@config[:post_group_callback].call())
+        @error_count += 1
+        @output.callback_failed(@config[:post_group_callback].inspect)
+      end
+    end
   rescue => error
     caught_error(error, 'after_all')
   end
