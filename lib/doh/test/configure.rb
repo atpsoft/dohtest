@@ -7,10 +7,15 @@ def self.config
 end
 
 def self.load_configuration_files(start_path)
-  start_directory = File.dirname(start_path)
-  root_directory = Doh::find_root(start_directory)
+  start_path = File.expand_path(start_path)
+  if File.directory?(start_path)
+    start_directory = start_path
+  else
+    start_directory = File.dirname(start_path)
+  end
+  root_directory = Doh.find_root(start_directory)
 
-  local_filename = Doh::findup(start_directory, 'configure_dohtest.rb')
+  local_filename = Doh.findup(start_directory, 'configure_dohtest.rb')
   if local_filename && File.exist?(local_filename)
     require(local_filename)
     return
