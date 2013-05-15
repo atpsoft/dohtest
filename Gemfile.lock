@@ -1,0 +1,10 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    dohroot (0.1.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  dohtest!
