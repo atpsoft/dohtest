@@ -14,11 +14,15 @@ class MasterRunner
     DohTest::require_paths(@config[:glob], @paths)
     srand(@config[:seed])
     @output.run_begin(@config)
+    total_problems = 0
     TestGroup.descendants.each do |group_class|
-      break if GroupRunner.new(group_class, @output, @config).run
+      runner = GroupRunner.new(group_class, @output, @config)
+      brink_hit = runner.run
+      total_problems += runner.total_problems
+      break if brink_hit
     end
     if @config[:post_all_callback]
-      if (!@config[:post_all_callback].call())
+      if (!@config[:post_all_callback].call(problems_occured))
         @output.callback_failed(@config[:post_all_callback].inspect)
       end
     end

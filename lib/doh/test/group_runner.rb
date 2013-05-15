@@ -48,7 +48,7 @@ class GroupRunner
   def run_after_all
     @group.after_all if @group.respond_to?(:after_all)
     if @config[:post_group_callback]
-      if (!@config[:post_group_callback].call())
+      if (!@config[:post_group_callback].call(total_problems))
         @error_count += 1
         @output.callback_failed(@config[:post_group_callback].inspect)
       end
@@ -153,6 +153,10 @@ class GroupRunner
   def caught_error(error, test_name = nil)
     @error_count += 1
     @output.test_error(@group_name, test_name || @test_name, error)
+  end
+
+  def total_problems
+    @error_count + @assertions_failed
   end
 end
 
