@@ -37,7 +37,7 @@ class GroupRunner
     if @config[:pre_group_callback]
       if (!@config[:pre_group_callback].call())
         @error_count += 1
-        @output.callback_failed(@config[:post_group_callback].inspect)
+        @output.callback_failed(@config[:pre_group_callback].inspect)
       end
     end
   rescue => error
