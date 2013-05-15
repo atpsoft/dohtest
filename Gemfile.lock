@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     dohroot (0.1.1)
+    term-ansicolor (1.1.4)
 
 PLATFORMS
   ruby
