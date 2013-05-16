@@ -22,7 +22,7 @@ class MasterRunner
       break if brink_hit
     end
     if @config[:post_all_callback]
-      if (!@config[:post_all_callback].call(problems_occured))
+      if (!@config[:post_all_callback].call(total_problems))
         @output.callback_failed(@config[:post_all_callback].inspect)
       end
     end
