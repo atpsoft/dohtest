@@ -1,4 +1,4 @@
-require 'doh/test/backtrace_parser'
+require 'dohtest/backtrace_parser'
 require 'set'
 require 'term/ansicolor'
 

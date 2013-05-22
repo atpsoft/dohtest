@@ -1,6 +1,6 @@
-require 'doh/root'; Doh::find_root_from_file
+require 'dohroot'; Doh.find_root_from_file
 require 'minitest/autorun'
-require 'doh/test/backtrace_parser'
+require 'dohtest/backtrace_parser'
 
 module DohTest
 

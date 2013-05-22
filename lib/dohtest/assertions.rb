@@ -1,4 +1,4 @@
-require 'doh/test/failure'
+require 'dohtest/failure'
 
 module DohTest
 

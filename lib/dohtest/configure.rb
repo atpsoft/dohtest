@@ -1,4 +1,4 @@
-require 'doh/root'
+require 'dohroot'
 
 module DohTest
 
@@ -28,8 +28,8 @@ def self.load_configuration_files(start_path)
 end
 
 def self.add_default_config_values
-  DohTest::config[:glob] ||= '*.dt.rb'
-  DohTest::config[:seed] ||= (Time.new.to_f * 1000).to_i
+  DohTest.config[:glob] ||= '*.dt.rb'
+  DohTest.config[:seed] ||= (Time.new.to_f * 1000).to_i
 end
 
 def self.configure(start_path)

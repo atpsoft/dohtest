@@ -1,5 +1,5 @@
-require 'doh/test/group_runner'
-require 'doh/test/require_paths'
+require 'dohtest/group_runner'
+require 'dohtest/require_paths'
 
 module DohTest
 

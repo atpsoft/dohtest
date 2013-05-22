@@ -1,4 +1,4 @@
-require 'doh/test/test_group'
+require 'dohtest/test_group'
 
 module DohTest
 

@@ -1,7 +1,7 @@
-require 'doh/root'; Doh::find_root_from_file
+require 'dohroot'; Doh.find_root_from_file
 require 'minitest/autorun'
-require 'doh/test/group_runner'
-require 'doh/test/capture_output'
+require 'dohtest/group_runner'
+require 'dohtest/capture_output'
 
 module DohTest
 

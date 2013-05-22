@@ -1,4 +1,4 @@
-require 'doh/test/assertions'
+require 'dohtest/assertions'
 
 module DohTest
 
