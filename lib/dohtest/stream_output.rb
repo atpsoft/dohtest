@@ -19,6 +19,7 @@ class StreamOutput
 
     has_terminal = $stdout.tty?
     @no_color = !has_terminal || @config[:no_color]
+    @verbose = (has_terminal && !@config[:quiet]) || @config[:verbose]
   end
 
   def run_end(duration)
@@ -87,8 +88,10 @@ class StreamOutput
     @groups_ran += 1
     total_tests = tests_ran + tests_skipped
     total_assertions = assertions_passed + assertions_failed
-    skipped_str = if tests_skipped > 0 then ": #{tests_ran} ran, #{tests_skipped} skipped" else '' end
-    puts "success in #{group_name}: #{total_tests} tests#{skipped_str}; #{total_assertions} assertions" unless @badness.include?(group_name)
+    if @verbose
+      skipped_str = if tests_skipped > 0 then ": #{tests_ran} ran, #{tests_skipped} skipped" else '' end
+      puts "success in #{group_name}: #{total_tests} tests#{skipped_str}; #{total_assertions} assertions" unless @badness.include?(group_name)
+    end
   end
 
   def test_begin(group_name, test_name)
