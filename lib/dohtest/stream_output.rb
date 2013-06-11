@@ -16,6 +16,9 @@ class StreamOutput
   def run_begin(config)
     @config = config
     puts "running tests with config: #{config}"
+
+    has_terminal = $stdout.tty?
+    @no_color = !has_terminal || @config[:no_color]
   end
 
   def run_end(duration)
@@ -118,7 +121,7 @@ class StreamOutput
 
 private
   def colorize(type, msg)
-    return msg if @config[:no_color]
+    return msg if @no_color
     color = @config["#{type}_color".to_sym] || DEFAULT_COLORS[type]
     "#{Term::ANSIColor.send(color)}#{Term::ANSIColor.bold}#{msg}#{Term::ANSIColor.clear}"
   end
