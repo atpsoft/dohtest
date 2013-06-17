@@ -11,8 +11,8 @@ class StreamOutput
     @error_count = @groups_ran = @groups_skipped = @tests_ran = @tests_skipped = @assertions_failed = @assertions_passed = 0
     @callback_succeeded = true
     @badness = Set.new
-    @std_ios = ios || $stdout
-    @err_ios = ios || $stderr
+    @std_ios = std_ios || $stdout
+    @err_ios = err_ios || $stderr
   end
 
   def run_begin(config)
