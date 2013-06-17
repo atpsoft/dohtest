@@ -7,18 +7,19 @@ module DohTest
 class StreamOutput
   DEFAULT_COLORS = {:failure => :red, :error => :magenta, :info => :blue, :success => :green}.freeze
 
-  def initialize(ios = nil)
+  def initialize(std_ios = nil, err_ios = nil)
     @error_count = @groups_ran = @groups_skipped = @tests_ran = @tests_skipped = @assertions_failed = @assertions_passed = 0
     @callback_succeeded = true
     @badness = Set.new
-    @ios = ios || $stdout
+    @std_ios = ios || $stdout
+    @err_ios = ios || $stderr
   end
 
   def run_begin(config)
     @config = config
-    @ios.puts "running tests with config: #{config}"
+    @std_ios.puts "running tests with config: #{config}"
 
-    has_terminal = @ios.tty?
+    has_terminal = @std_ios.tty?
     @no_color = !has_terminal || @config[:no_color]
     @verbose = (has_terminal && !@config[:quiet]) || @config[:verbose]
   end
@@ -29,9 +30,9 @@ class StreamOutput
     if duration >= 1
       tests_per_second = (@tests_ran / duration).round(2)
       assertions_per_second = (total_assertions / duration).round(2)
-      @ios.puts "\n\ncompleted in #{duration.round(2)}s, #{tests_per_second} tests/s, #{assertions_per_second} assertions/s"
+      @std_ios.puts "\n\ncompleted in #{duration.round(2)}s, #{tests_per_second} tests/s, #{assertions_per_second} assertions/s"
     else
-      @ios.puts "\n\ncompleted in #{duration.round(2)}s"
+      @std_ios.puts "\n\ncompleted in #{duration.round(2)}s"
     end
 
     if @error_count == 0
@@ -67,7 +68,7 @@ class StreamOutput
 
     msg = "#{error_str}; #{group_str}; #{test_str}; #{assertion_str}"
     msg = colorize(:success, msg) if success
-    @ios.puts msg
+    @std_ios.puts msg
 
     # this is to generate an exit code; true translates to 0, false to 1
     success
@@ -82,7 +83,7 @@ class StreamOutput
       if tests_skipped > 0
         @groups_skipped += 1
       else
-        @ios.puts colorize(:info, "no tests defined in #{group_name}")
+        @std_ios.puts colorize(:info, "no tests defined in #{group_name}")
       end
       return
     end
@@ -91,7 +92,7 @@ class StreamOutput
     total_assertions = assertions_passed + assertions_failed
     if @verbose
       skipped_str = if tests_skipped > 0 then ": #{tests_ran} ran, #{tests_skipped} skipped" else '' end
-      @ios.puts "success in #{group_name}: #{total_tests} tests#{skipped_str}; #{total_assertions} assertions" unless @badness.include?(group_name)
+      @std_ios.puts "success in #{group_name}: #{total_tests} tests#{skipped_str}; #{total_assertions} assertions" unless @badness.include?(group_name)
     end
   end
 
@@ -116,7 +117,7 @@ class StreamOutput
 
   def callback_failed(test_name)
     @callback_succeeded = false
-    warn colorize(:error, "callback #{test_name} failed")
+    @err_ios.puts colorize(:error, "callback #{test_name} failed")
   end
 
   def assertion_passed(group_name, test_name)
@@ -133,12 +134,12 @@ private
   def display_badness(group_name, test_name, excpt)
     badness_type = if excpt.is_a?(DohTest::Failure) then :failure else :error end
     parser = DohTest::BacktraceParser.new(excpt.backtrace)
-    warn colorize(badness_type, "#{badness_type} in #{group_name}.#{test_name} at:")
+    @err_ios.puts colorize(badness_type, "#{badness_type} in #{group_name}.#{test_name} at:")
     parser.relevant_stack.each do |path, line|
-      warn "#{path}:#{line}"
+      @err_ios.puts "#{path}:#{line}"
     end
     if badness_type == :error
-      warn colorize(:info, "#{excpt.class}: #{excpt.message}")
+      @err_ios.puts colorize(:info, "#{excpt.class}: #{excpt.message}")
     else
       display_failure_message(excpt)
     end
@@ -148,40 +149,40 @@ private
     if failure.message.empty?
       send("display_#{failure.assert}_failure", failure)
     else
-      warn colorize(:info, failure.message)
+      @err_ios.puts colorize(:info, failure.message)
     end
   end
 
   def display_boolean_failure(failure)
-    warn colorize(:info, "assertion failed")
+    @err_ios.puts colorize(:info, "assertion failed")
   end
 
   def display_equal_failure(failure)
-    warn colorize(:info, "expected: #{failure.expected.inspect}\n  actual: #{failure.actual.inspect}")
+    @err_ios.puts colorize(:info, "expected: #{failure.expected.inspect}\n  actual: #{failure.actual.inspect}")
   end
 
   def display_raises_failure(failure)
     if failure.actual
       expected_str = if (failure.expected.size == 1) then failure.expected.first else "one of #{failure.expected.join(',')}" end
-      warn colorize(:info, "expected: #{expected_str}; actual: #{failure.actual.class}: #{failure.actual.message}")
+      @err_ios.puts colorize(:info, "expected: #{expected_str}; actual: #{failure.actual.class}: #{failure.actual.message}")
       DohTest::BacktraceParser.new(failure.actual.backtrace).relevant_stack.each do |path, line|
-        warn "#{path}:#{line}"
+        @err_ios.puts "#{path}:#{line}"
       end
     else
-      warn colorize(:info, "expected: #{failure.expected}, but no exception was raised")
+      @err_ios.puts colorize(:info, "expected: #{failure.expected}, but no exception was raised")
     end
   end
 
   def display_instance_of_failure(failure)
-    warn colorize(:info, "expected class: #{failure.expected}; actual class: #{failure.actual.class}, object: #{failure.actual}")
+    @err_ios.puts colorize(:info, "expected class: #{failure.expected}; actual class: #{failure.actual.class}, object: #{failure.actual}")
   end
 
   def display_match_failure(failure)
-    warn colorize(:info, "expected regex #{failure.expected} to match str: #{failure.actual}")
+    @err_ios.puts colorize(:info, "expected regex #{failure.expected} to match str: #{failure.actual}")
   end
 
   def display_not_equal_failure(failure)
-    warn colorize(:info, "expected unequal values; both are: #{failure.expected.inspect}")
+    @err_ios.puts colorize(:info, "expected unequal values; both are: #{failure.expected.inspect}")
   end
 
 end
