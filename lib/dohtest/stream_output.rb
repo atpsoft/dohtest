@@ -7,17 +7,18 @@ module DohTest
 class StreamOutput
   DEFAULT_COLORS = {:failure => :red, :error => :magenta, :info => :blue, :success => :green}.freeze
 
-  def initialize
+  def initialize(ios = nil)
     @error_count = @groups_ran = @groups_skipped = @tests_ran = @tests_skipped = @assertions_failed = @assertions_passed = 0
     @callback_succeeded = true
     @badness = Set.new
+    @ios = ios || $stdout
   end
 
   def run_begin(config)
     @config = config
-    puts "running tests with config: #{config}"
+    @ios.puts "running tests with config: #{config}"
 
-    has_terminal = $stdout.tty?
+    has_terminal = @ios.tty?
     @no_color = !has_terminal || @config[:no_color]
     @verbose = (has_terminal && !@config[:quiet]) || @config[:verbose]
   end
@@ -28,9 +29,9 @@ class StreamOutput
     if duration >= 1
       tests_per_second = (@tests_ran / duration).round(2)
       assertions_per_second = (total_assertions / duration).round(2)
-      puts "\n\ncompleted in #{duration.round(2)}s, #{tests_per_second} tests/s, #{assertions_per_second} assertions/s"
+      @ios.puts "\n\ncompleted in #{duration.round(2)}s, #{tests_per_second} tests/s, #{assertions_per_second} assertions/s"
     else
-      puts "\n\ncompleted in #{duration.round(2)}s"
+      @ios.puts "\n\ncompleted in #{duration.round(2)}s"
     end
 
     if @error_count == 0
@@ -66,7 +67,7 @@ class StreamOutput
 
     msg = "#{error_str}; #{group_str}; #{test_str}; #{assertion_str}"
     msg = colorize(:success, msg) if success
-    puts msg
+    @ios.puts msg
 
     # this is to generate an exit code; true translates to 0, false to 1
     success
@@ -81,7 +82,7 @@ class StreamOutput
       if tests_skipped > 0
         @groups_skipped += 1
       else
-        puts colorize(:info, "no tests defined in #{group_name}")
+        @ios.puts colorize(:info, "no tests defined in #{group_name}")
       end
       return
     end
@@ -90,7 +91,7 @@ class StreamOutput
     total_assertions = assertions_passed + assertions_failed
     if @verbose
       skipped_str = if tests_skipped > 0 then ": #{tests_ran} ran, #{tests_skipped} skipped" else '' end
-      puts "success in #{group_name}: #{total_tests} tests#{skipped_str}; #{total_assertions} assertions" unless @badness.include?(group_name)
+      @ios.puts "success in #{group_name}: #{total_tests} tests#{skipped_str}; #{total_assertions} assertions" unless @badness.include?(group_name)
     end
   end
 
