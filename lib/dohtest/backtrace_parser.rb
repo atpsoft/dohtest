@@ -18,7 +18,7 @@ private
     retval = []
     found_start = false
     @backtrace.each do |location|
-      has_doh_test = location.index('doh/test')
+      has_doh_test = location.index('dohtest')
       if found_start && has_doh_test
         break
       elsif has_doh_test
