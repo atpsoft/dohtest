@@ -9,6 +9,7 @@ class GroupRunner
     @group_name = @group_class.to_s
     @before_all_failed = false
     @error_count = @tests_ran = @tests_skipped = @assertions_failed = @assertions_passed = 0
+    @test_name = 'no_test_name_set_yet'
   end
 
   def run
