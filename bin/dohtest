@@ -8,8 +8,11 @@ opts = Doh::Options.new({
 'seed' => [nil, "-s", "--seed <number>", "use this as the seed to srand"],
 'no_color' => [nil, '-c', '--no_color', "use this if you don't want ANSI color codes"],
 'verbose' => [nil, '-v', '--verbose', "use this to generate more output"],
-'quiet' => [nil, '-q', '--quiet', "use this to generate less output"],
+'quiet' => [nil, '-q', '--quiet', "use this to generate less output, disables ruby -v mode (which is default) "],
 }, true, 'Files or directories may be specified to run tests on.  Directories will be treated recursively.  Defaults to the current directory.')
+
+#generates ruby warnings -- equivalent to ruby -v
+$VERBOSE = true unless opts.quiet
 
 paths = (if opts.varargs.empty? then ['.'] else opts.varargs end)
 
