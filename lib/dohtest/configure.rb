@@ -1,5 +1,3 @@
-require 'dohroot'
-
 module DohTest
 extend self
 
@@ -7,25 +5,46 @@ def config
   @config ||= {}
 end
 
+def find_root(start_directory, max_tries = 20)
+  curr_directory = start_directory
+  max_tries.times do
+    return nil if curr_directory == '/'
+    if File.directory?(File.join(curr_directory, 'test'))
+      return curr_directory
+    end
+    curr_directory = File.expand_path(File.join(curr_directory, '..'))
+  end
+  nil
+end
+
 def load_configuration_files(start_path)
-  start_path = File.expand_path(start_path)
+  start_path = File.expand_path(start_path || '.')
   if File.directory?(start_path)
     start_directory = start_path
   else
     start_directory = File.dirname(start_path)
   end
-  root_directory = Doh.find_root(start_directory)
+  root_directory = find_root(start_directory)
+  raise "unable to determine root directory to run tests from" unless root_directory
+  DohTest.config[:root] = root_directory
 
-  local_filename = Doh.findup(start_directory, 'configure_dohtest.rb')
-  if local_filename && File.exist?(local_filename)
-    require(local_filename)
+  libdir = File.join(root_directory, 'lib')
+  if File.directory?(libdir) && !$LOAD_PATH.include?(libdir)
+    $LOAD_PATH << libdir
+  end
+
+  cfgfile = File.join(root_directory, 'dohtest.rb')
+  if File.exist?(cfgfile)
+    require(cfgfile)
     return
   end
 
-  if root_directory
-    root_filename = File.join(root_directory, 'config', 'dohtest.rb')
-    require(root_filename) if File.exist?(root_filename)
+  cfgfile = File.join(root_directory, 'config', 'dohtest.rb')
+  if File.exist?(cfgfile)
+    require(cfgfile)
+    return
   end
+
 end
 
 def add_default_config_values

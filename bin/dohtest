@@ -14,9 +14,9 @@ opts = Doh::Options.new({
 #generates ruby warnings -- equivalent to ruby -v
 $VERBOSE = true unless opts.quiet
 
-paths = (if opts.varargs.empty? then ['.'] else opts.varargs end)
+paths = opts.varargs
 
-DohTest.configure(paths[0])
+DohTest.configure(paths.first)
 DohTest.config[:grep] = opts.grep if opts.grep
 DohTest.config[:glob] = opts.glob if opts.glob
 DohTest.config[:seed] = opts.seed.to_i if opts.seed

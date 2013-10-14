@@ -11,7 +11,14 @@ class MasterRunner
   def run
     start_time = Time.now
     @config[:pre_test_callback].call(@output) if @config[:pre_test_callback]
-    DohTest::require_paths(@config[:glob], @paths)
+    if @paths.empty?
+      unless DohTest.require_paths(@config[:glob], ['.'])
+        DohTest.require_paths(@config[:glob], [@config[:root]])
+      end
+    else
+      DohTest.require_paths(@config[:glob], @paths)
+    end
+
     srand(@config[:seed])
     @output.run_begin(@config)
     total_problems = 0
