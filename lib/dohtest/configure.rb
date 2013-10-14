@@ -1,12 +1,13 @@
 require 'dohroot'
 
 module DohTest
+extend self
 
-def self.config
+def config
   @config ||= {}
 end
 
-def self.load_configuration_files(start_path)
+def load_configuration_files(start_path)
   start_path = File.expand_path(start_path)
   if File.directory?(start_path)
     start_directory = start_path
@@ -27,12 +28,12 @@ def self.load_configuration_files(start_path)
   end
 end
 
-def self.add_default_config_values
+def add_default_config_values
   DohTest.config[:glob] ||= '*.dt.rb'
   DohTest.config[:seed] ||= (Time.new.to_f * 1000).to_i
 end
 
-def self.configure(start_path)
+def configure(start_path)
   load_configuration_files(start_path)
   add_default_config_values
 end
