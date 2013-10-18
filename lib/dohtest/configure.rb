@@ -1,3 +1,5 @@
+require 'dohroot'
+
 module DohTest
 extend self
 
@@ -27,6 +29,7 @@ def load_configuration_files(start_path)
   root_directory = find_root(start_directory)
   raise "unable to determine root directory to run tests from" unless root_directory
   DohTest.config[:root] = root_directory
+  Doh.find_root_from_path(root_directory)
 
   libdir = File.join(root_directory, 'lib')
   if File.directory?(libdir) && !$LOAD_PATH.include?(libdir)
