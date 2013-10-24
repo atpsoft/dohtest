@@ -10,6 +10,9 @@ class GroupRunner
     @before_all_failed = false
     @error_count = @tests_ran = @tests_skipped = @assertions_failed = @assertions_passed = 0
     @test_name = 'no_test_name_set_yet'
+    @max_errors = nil
+    @max_failures = nil
+    @has_brink = false
   end
 
   def run
@@ -109,8 +112,12 @@ class GroupRunner
   end
 
   def setup_brink
-    @max_errors = if @config.key?(:max_errors) then @config[:max_errors].to_i else nil end
-    @max_failures = if @config.key?(:max_failures) then @config[:max_failures].to_i else nil end
+    if @config.key?(:max_errors) then
+      @max_errors = @config[:max_errors].to_i
+    end
+    if @config.key?(:max_failures) then
+      @max_failures = @config[:max_failures].to_i
+    end
     @has_brink = @max_errors || @max_failures
   end
 
