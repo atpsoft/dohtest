@@ -10,8 +10,8 @@ class GroupRunner
     @before_all_failed = false
     @error_count = @tests_ran = @tests_skipped = @assertions_failed = @assertions_passed = 0
     @test_name = 'no_test_name_set_yet'
-    @max_errors = nil
-    @max_failures = nil
+    @max_errors = 0
+    @max_failures = 0
     @has_brink = false
   end
 
