@@ -28,9 +28,9 @@ class MasterRunner
       total_problems += runner.total_problems
       break if brink_hit
     end
-    if @config[:post_all_callback]
-      if (!@config[:post_all_callback].call(total_problems))
-        @output.callback_failed(@config[:post_all_callback].inspect)
+    @config[:post_all_callback].each do |proc|
+      if !proc.call(total_problems)
+        @output.callback_failed(proc.inspect)
       end
     end
     @output.run_end(Time.now - start_time)

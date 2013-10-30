@@ -4,7 +4,7 @@ module DohTest
 extend self
 
 def config
-  @config ||= {}
+  @config ||= {:post_all_callback => []}
 end
 
 def find_root(start_directory, max_tries = 20)

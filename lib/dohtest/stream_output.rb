@@ -9,7 +9,7 @@ class StreamOutput
 
   def initialize(std_ios = nil, err_ios = nil)
     @error_count = @groups_ran = @groups_skipped = @tests_ran = @tests_skipped = @assertions_failed = @assertions_passed = 0
-    @callback_succeeded = true
+    @callbacks_succeeded = true
     @badness = Set.new
     @std_ios = std_ios || $stdout
     @err_ios = err_ios || $stderr
@@ -64,7 +64,7 @@ class StreamOutput
       assertion_str = "#{total_assertions} assertions: #@assertions_passed passed, #{failed_str}"
     end
 
-    success = (total_assertions > 0) && (@error_count == 0) && (@assertions_failed == 0) && @callback_succeeded
+    success = (total_assertions > 0) && (@error_count == 0) && (@assertions_failed == 0) && @callbacks_succeeded
 
     msg = "#{error_str}; #{group_str}; #{test_str}; #{assertion_str}"
     msg = colorize(:success, msg) if success
@@ -115,9 +115,9 @@ class StreamOutput
     display_badness(group_name, test_name, failure)
   end
 
-  def callback_failed(test_name)
-    @callback_succeeded = false
-    @err_ios.puts colorize(:error, "callback #{test_name} failed")
+  def callback_failed(proc_name)
+    @callbacks_succeeded = false
+    @err_ios.puts colorize(:error, "callback #{proc_name} failed")
   end
 
   def assertion_passed(group_name, test_name)
