@@ -112,17 +112,15 @@ class GroupRunner
   end
 
   def setup_brink
-    if @config.key?(:max_errors) then
-      @max_errors = @config[:max_errors].to_i
-    end
-    if @config.key?(:max_failures) then
-      @max_failures = @config[:max_failures].to_i
-    end
-    @has_brink = @max_errors || @max_failures
+    @max_errors = @config[:max_errors].to_i
+    @max_failures = @config[:max_failures].to_i
+
+    @has_brink = (@max_errors > 0) || (@max_failures > 0)
   end
 
   def past_brink?
-    (@max_errors && (@error_count > @max_errors)) || (@max_failures && (@assertions_failed > @max_failures))
+    ((@max_errors > 0) && (@error_count >= @max_errors)) ||
+    ((@max_failures > 0) && (@assertions_failed >= @max_failures))
   end
 
   def run_tests

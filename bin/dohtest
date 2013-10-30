@@ -9,6 +9,8 @@ opts = Doh::Options.new({
 'no_color' => [nil, '-c', '--no_color', "use this if you don't want ANSI color codes"],
 'verbose' => [nil, '-v', '--verbose', "use this to generate more output"],
 'quiet' => [nil, '-q', '--quiet', "use this to generate less output, disables ruby -v mode (which is default) "],
+'max_errors' => [0, '-e', '--max_errors', "stop tests after this many unexpected errors have happened; disabled by default"],
+'max_failures' => [0, '-f', '--max_failures', "stop tests after this many assertion failures have happened; disabled by default"],
 }, true, 'Files or directories may be specified to run tests on.  Directories will be treated recursively.  Defaults to the current directory.')
 
 #generates ruby warnings -- equivalent to ruby -v
@@ -23,5 +25,7 @@ DohTest.config[:seed] = opts.seed.to_i if opts.seed
 DohTest.config[:no_color] = true if opts.no_color
 DohTest.config[:verbose] = true if opts.verbose
 DohTest.config[:quiet] = true if opts.quiet
+DohTest.config[:max_errors] = opts.max_errors
+DohTest.config[:max_failures] = opts.max_failures
 
 exit DohTest::MasterRunner.new(DohTest::StreamOutput.new, DohTest.config, paths).run
