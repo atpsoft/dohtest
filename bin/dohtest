@@ -19,6 +19,7 @@ $VERBOSE = true unless opts.quiet
 
 paths = opts.varargs
 
+DohTest.config[:config_options] = opts.config_options
 DohTest.configure(paths.first)
 DohTest.config[:grep] = opts.grep if opts.grep
 DohTest.config[:glob] = opts.glob if opts.glob
@@ -28,6 +29,5 @@ DohTest.config[:verbose] = true if opts.verbose
 DohTest.config[:quiet] = true if opts.quiet
 DohTest.config[:max_errors] = opts.max_errors
 DohTest.config[:max_failures] = opts.max_failures
-DohTest.config[:config_options] = opts.config_options
 
 exit DohTest::MasterRunner.new(DohTest::StreamOutput.new, DohTest.config, paths).run
