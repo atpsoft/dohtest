@@ -22,7 +22,7 @@ class MasterRunner
     srand(@config[:seed])
     @output.run_begin(@config)
     total_problems = 0
-    TestGroup.descendants.each do |group_class|
+    TestGroup.descendants.shuffle.each do |group_class|
       runner = GroupRunner.new(group_class, @output, @config)
       brink_hit = runner.run
       total_problems += runner.total_problems
