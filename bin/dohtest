@@ -9,8 +9,8 @@ opts = Doh::Options.new({
 'no_color' => [nil, '-c', '--no_color', "use this if you don't want ANSI color codes"],
 'verbose' => [nil, '-v', '--verbose', "use this to generate more output"],
 'quiet' => [nil, '-q', '--quiet', "use this to generate less output, disables ruby -v mode (which is default) "],
-'max_errors' => [0, '-e', '--max_errors', "stop tests after this many unexpected errors have happened; disabled by default"],
-'max_failures' => [0, '-f', '--max_failures', "stop tests after this many assertion failures have happened; disabled by default"],
+'max_errors' => [0, '-e', '--max_errors <number>', "stop tests after this many unexpected errors have happened; disabled by default"],
+'max_failures' => [0, '-f', '--max_failures <number>', "stop tests after this many assertion failures have happened; disabled by default"],
 'config_options' => [0, '-o', '--options <string>', "options to set in DohTest.config[:config_options]"],
 }, true, 'Files or directories may be specified to run tests on.  Directories will be treated recursively.  Defaults to the current directory.')
 
