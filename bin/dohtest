@@ -20,10 +20,10 @@ $VERBOSE = true unless opts.quiet
 paths = opts.varargs
 
 DohTest.config[:config_options] = opts.config_options
+DohTest.config[:seed] = opts.seed.to_i if opts.seed
 DohTest.configure(paths.first)
 DohTest.config[:grep] = opts.grep if opts.grep
 DohTest.config[:glob] = opts.glob if opts.glob
-DohTest.config[:seed] = opts.seed.to_i if opts.seed
 DohTest.config[:no_color] = true if opts.no_color
 DohTest.config[:verbose] = true if opts.verbose
 DohTest.config[:quiet] = true if opts.quiet
