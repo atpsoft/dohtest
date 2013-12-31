@@ -103,16 +103,16 @@ class StreamOutput
     @tests_ran += 1
   end
 
-  def test_error(group_name, test_name, error)
+  def test_error(group_name, test_name, error, seed)
     @badness.add(group_name)
     @error_count += 1
-    display_badness(group_name, test_name, error)
+    display_badness(group_name, test_name, error, seed)
   end
 
-  def assertion_failed(group_name, test_name, failure)
+  def assertion_failed(group_name, test_name, failure, seed)
     @badness.add(group_name)
     @assertions_failed += 1
-    display_badness(group_name, test_name, failure)
+    display_badness(group_name, test_name, failure, seed)
   end
 
   def callback_failed(proc_name)
@@ -131,10 +131,10 @@ private
     "#{Term::ANSIColor.send(color)}#{Term::ANSIColor.bold}#{msg}#{Term::ANSIColor.clear}"
   end
 
-  def display_badness(group_name, test_name, excpt)
+  def display_badness(group_name, test_name, excpt, seed)
     badness_type = if excpt.is_a?(DohTest::Failure) then :failure else :error end
     parser = DohTest::BacktraceParser.new(excpt.backtrace)
-    @err_ios.puts colorize(badness_type, "#{badness_type} in #{group_name}.#{test_name} at:")
+    @err_ios.puts colorize(badness_type, "#{badness_type} with seed: #{seed} in #{group_name}.#{test_name} at:")
     parser.relevant_stack.each do |path, line|
       @err_ios.puts "#{path}:#{line}"
     end

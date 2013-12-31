@@ -13,6 +13,7 @@ class GroupRunner
     @max_errors = 0
     @max_failures = 0
     @has_brink = false
+    @current_seed = nil
   end
 
   def run
@@ -106,7 +107,7 @@ class GroupRunner
     @group.send(@test_name)
   rescue DohTest::Failure => failure
     @assertions_failed += 1
-    @output.assertion_failed(@group_name, @test_name, failure)
+    @output.assertion_failed(@group_name, @test_name, failure, @current_seed)
   rescue => error
     caught_error(error)
   end
@@ -123,6 +124,15 @@ class GroupRunner
     ((@max_failures > 0) && (@assertions_failed >= @max_failures))
   end
 
+  def generate_new_seed
+    if !@current_seed
+      @current_seed = DohTest.config[:seed]
+    else
+      @current_seed = rand(100000000000)
+    end
+    srand(@current_seed)
+  end
+
   def run_tests
     determine_test_methods
     find_before_each_method
@@ -131,6 +141,7 @@ class GroupRunner
 
     @test_methods.each do |method_name|
       break if @has_brink && past_brink?
+      generate_new_seed
       @test_name = method_name
       @before_each_failed = false
       @output.test_begin(@group_name, @test_name)
@@ -158,7 +169,7 @@ class GroupRunner
 
   def caught_error(error, test_name = nil)
     @error_count += 1
-    @output.test_error(@group_name, test_name || @test_name, error)
+    @output.test_error(@group_name, test_name || @test_name, error, @current_seed)
   end
 
   def total_problems
