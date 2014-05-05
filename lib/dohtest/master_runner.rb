@@ -10,7 +10,9 @@ class MasterRunner
 
   def run
     start_time = Time.now
-    @config[:pre_test_callback].call(@output) if @config[:pre_test_callback]
+    @config[:pre_test_callback].each do |callback|
+      callback.call(@output)
+    end
     if @paths.empty?
       unless DohTest.require_paths(@config[:glob], ['.'])
         DohTest.require_paths(@config[:glob], [@config[:root]])
