@@ -26,7 +26,7 @@ class TestBlee < DohTest::TestGroup
 
   def test_silly_error
     verify_diff(2, 4, 2)
-    badness = 5 / 0
+    _badness = 5 / 0
   end
 
   def test_lots_more_goodness
@@ -51,5 +51,3 @@ class TestBlee < DohTest::TestGroup
   end
 
 end
-
-
