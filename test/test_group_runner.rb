@@ -15,7 +15,7 @@ class TestGroupRunner < MiniTest::Unit::TestCase
   def run_group(group_klass, grepstr = nil)
     @group_klass = group_klass
     @output = CaptureOutput.new
-    config = if grepstr then {:grep => grepstr} else nil end
+    config = if grepstr then DohTest.config.merge({:grep => grepstr}) else nil end
     @runner = GroupRunner.new(@group_klass, @output, config)
     @runner.run
     @events = @output.events

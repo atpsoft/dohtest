@@ -1,11 +1,12 @@
 require 'dohtest/test_group'
+require 'dohtest/configure'
 
 module DohTest
 
 class GroupRunner
   def initialize(group_class, output, config = nil)
     @group_class,@output = group_class,output
-    @config = config || {}
+    @config = config || DohTest.config
     @group_name = @group_class.to_s
     @before_all_failed = false
     @error_count = @tests_ran = @tests_skipped = @assertions_failed = @assertions_passed = 0
