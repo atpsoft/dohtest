@@ -106,7 +106,7 @@ class GroupRunner
     @group.send(@test_name)
   rescue DohTest::Failure => failure
     @assertions_failed += 1
-    @output.assertion_failed(@group_name, @test_name, failure, DohTest.config[:dynamic_seed])
+    @output.assertion_failed(@group_name, @test_name, failure, @config[:dynamic_seed])
   rescue => error
     caught_error(error)
   end
@@ -124,11 +124,11 @@ class GroupRunner
   end
 
   def generate_new_seed
-    if DohTest.config[:dynamic_seed]
-      DohTest.config[:dynamic_seed] = rand(100000000000)
-      srand(DohTest.config[:dynamic_seed])
+    if @config[:dynamic_seed]
+      @config[:dynamic_seed] = rand(100000000000)
+      srand(@config[:dynamic_seed])
     else
-      DohTest.config[:dynamic_seed] = DohTest.config[:seed]
+      @config[:dynamic_seed] = @config[:seed]
     end
   end
 
@@ -168,7 +168,7 @@ class GroupRunner
 
   def caught_error(error, test_name = nil)
     @error_count += 1
-    @output.test_error(@group_name, test_name || @test_name, error, DohTest.config[:dynamic_seed])
+    @output.test_error(@group_name, test_name || @test_name, error, @config[:dynamic_seed])
   end
 
   def total_problems
