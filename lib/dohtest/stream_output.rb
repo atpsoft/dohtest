@@ -22,6 +22,7 @@ class StreamOutput
     has_terminal = @std_ios.tty?
     @no_color = !has_terminal || @config[:no_color]
     @verbose = (has_terminal && !@config[:quiet]) || @config[:verbose]
+    @extra_verbose = @config[:extra_verbose]
   end
 
   def run_end(duration)
@@ -75,6 +76,7 @@ class StreamOutput
   end
 
   def group_begin(group_name)
+    puts "running group #{group_name}" if @extra_verbose
   end
 
   def group_end(group_name, tests_ran, tests_skipped, assertions_passed, assertions_failed)
@@ -97,6 +99,7 @@ class StreamOutput
   end
 
   def test_begin(group_name, test_name)
+    puts "running test #{test_name}" if @extra_verbose
   end
 
   def test_end(group_name, test_name)

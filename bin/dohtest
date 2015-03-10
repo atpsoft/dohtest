@@ -8,6 +8,7 @@ opts = Doh::Options.new({
 'seed' => [nil, "-s", "--seed <number>", "use this as the seed to srand"],
 'no_color' => [nil, '-c', '--no_color', "use this if you don't want ANSI color codes"],
 'verbose' => [nil, '-v', '--verbose', "use this to generate more output"],
+'extra_verbose' => [nil, '-x', '--extra_verbose', "use this to generate even more output"],
 'quiet' => [nil, '-q', '--quiet', "use this to generate less output, disables ruby -v mode (which is default) "],
 'max_errors' => [0, '-e', '--max_errors <number>', "stop tests after this many unexpected errors have happened; disabled by default"],
 'max_failures' => [0, '-f', '--max_failures <number>', "stop tests after this many assertion failures have happened; disabled by default"],
@@ -25,7 +26,8 @@ DohTest.configure(paths.first)
 DohTest.config[:grep] = opts.grep if opts.grep
 DohTest.config[:glob] = opts.glob if opts.glob
 DohTest.config[:no_color] = true if opts.no_color
-DohTest.config[:verbose] = true if opts.verbose
+DohTest.config[:verbose] = true if opts.verbose || opts.extra_verbose
+DohTest.config[:extra_verbose] = true if opts.extra_verbose
 DohTest.config[:quiet] = true if opts.quiet
 DohTest.config[:max_errors] = opts.max_errors
 DohTest.config[:max_failures] = opts.max_failures
