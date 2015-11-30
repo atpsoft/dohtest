@@ -5,7 +5,7 @@ require 'dohtest/capture_output'
 
 module DohTest
 
-class TestGroupRunner < MiniTest::Unit::TestCase
+class TestGroupRunner < MiniTest::Test
   def verify_event(expected_pairs, event)
     expected_pairs.each_pair do |key, value|
       assert_equal(value, event[key])
