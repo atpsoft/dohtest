@@ -2,13 +2,13 @@ require 'rake'
 
 Gem::Specification.new do |s|
   s.name = 'dohtest'
-  s.version = '0.1.43'
+  s.version = '0.1.44'
   s.summary = 'minimalist unit test framework'
   s.description = 'Minimalist unit test framework, easy to understand and extend.'
   s.require_path = 'lib'
   s.required_ruby_version = '>= 2.0.0'
-  s.add_runtime_dependency 'dohroot', '>= 0.1.6'
-  s.add_runtime_dependency 'term-ansicolor', '>= 1.0.7'
+  s.add_runtime_dependency 'dohroot', '~> 0.1'
+  s.add_runtime_dependency 'term-ansicolor', '~> 1'
   s.authors = ['Makani Mason', 'Kem Mason']
   s.bindir = 'bin'
   s.homepage = 'https://github.com/atpsoft/dohtest'
