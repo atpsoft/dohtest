@@ -91,6 +91,12 @@ class GroupRunner
   end
 
   def run_before_each
+    @config[:pre_each_callback].each do |callback|
+      if !callback.call
+        @error_count += 1
+        @output.callback_failed(callback.inspect)
+      end
+    end
     @group.send(@before_each_method)
   rescue => error
     @before_each_failed = true
