@@ -97,7 +97,7 @@ class GroupRunner
         @output.callback_failed(callback.inspect)
       end
     end
-    @group.send(@before_each_method)
+    @group.send(@before_each_method) if @before_each_method
   rescue => error
     @before_each_failed = true
     caught_error(error)
@@ -151,7 +151,7 @@ class GroupRunner
       @test_name = method_name
       @before_each_failed = false
       @output.test_begin(@group_name, @test_name)
-      run_before_each if @before_each_method
+      run_before_each
       run_test_method unless @before_each_failed
       run_after_each if @after_each_method
       @tests_ran += 1
