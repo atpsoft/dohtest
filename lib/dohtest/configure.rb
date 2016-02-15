@@ -4,7 +4,8 @@ module DohTest
 extend self
 
 def config
-  @config ||= {:post_all_callback => [], :pre_group_callback => [], :post_group_callback => [], :pre_test_callback => [], :pre_each_callback => []}
+  @config ||= {:post_all_callback => [], :pre_group_callback => [], :post_group_callback => [], :pre_test_callback => [],
+    :pre_each_callback => [], :post_each_callback => []}
 end
 
 def find_root(start_directory, max_tries = 20)

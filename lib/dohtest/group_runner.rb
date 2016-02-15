@@ -104,7 +104,13 @@ class GroupRunner
   end
 
   def run_after_each
-    @group.send(@after_each_method)
+    @group.send(@after_each_method) if @after_each_method
+    @config[:post_each_callback].each do |callback|
+      if !callback.call
+        @error_count += 1
+        @output.callback_failed(callback.inspect)
+      end
+    end
   rescue => error
     caught_error(error)
   end
@@ -153,7 +159,7 @@ class GroupRunner
       @output.test_begin(@group_name, @test_name)
       run_before_each
       run_test_method unless @before_each_failed
-      run_after_each if @after_each_method
+      run_after_each
       @tests_ran += 1
       @output.test_end(@group_name, @test_name)
     end
