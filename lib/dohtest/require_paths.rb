@@ -11,7 +11,7 @@ def require_paths(glob, paths)
         require(filename)
       end
     else
-      require(File.expand_path(path))
+      require(path)
     end
   end
   return retval
