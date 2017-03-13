@@ -32,8 +32,6 @@ def load_configuration_files(start_path)
   DohTest.config[:root] = root_directory
 
   Doh.find_root_from_path(root_directory)
-  $LOAD_PATH.delete(File.join(Doh.root, 'lib'))
-
   libdir = File.join(root_directory, 'lib')
   if File.directory?(libdir) && !$LOAD_PATH.include?(libdir)
     $LOAD_PATH << libdir
