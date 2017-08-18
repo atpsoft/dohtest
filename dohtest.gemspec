@@ -2,11 +2,11 @@ require 'rake'
 
 Gem::Specification.new do |s|
   s.name = 'dohtest'
-  s.version = '0.1.47'
+  s.version = '0.1.48'
   s.summary = 'minimalist unit test framework'
   s.description = 'Minimalist unit test framework, easy to understand and extend.'
   s.require_path = 'lib'
-  s.required_ruby_version = '>= 2.0.0'
+  s.required_ruby_version = '>= 2.2.0'
   s.add_runtime_dependency 'dohroot', '~> 0.1'
   s.add_runtime_dependency 'term-ansicolor', '~> 1'
   s.authors = ['Makani Mason', 'Kem Mason']
