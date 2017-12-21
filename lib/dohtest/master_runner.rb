@@ -4,11 +4,9 @@ require 'dohtest/require_paths'
 module DohTest
 
 class MasterRunner
-  def initialize(output, config, paths = nil)
+  def initialize(output, config)
     @output = output
     @config = config
-    # temporary for ease of transition
-    @config[:paths] ||= paths
   end
 
   def run
