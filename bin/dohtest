@@ -30,6 +30,7 @@ DohTest.config[:extra_verbose] = true if opts.extra_verbose
 DohTest.config[:quiet] = true if opts.quiet
 DohTest.config[:max_errors] = opts.max_errors
 DohTest.config[:max_failures] = opts.max_failures
+DohTest.config[:paths] = paths
 DohTest.configure(paths.first)
 
-exit DohTest::MasterRunner.new(DohTest::StreamOutput.new, DohTest.config, paths).run
+exit DohTest::MasterRunner.new(DohTest::StreamOutput.new, DohTest.config).run

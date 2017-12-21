@@ -4,10 +4,11 @@ require 'dohtest/require_paths'
 module DohTest
 
 class MasterRunner
-  def initialize(output, config, paths)
+  def initialize(output, config, paths = nil)
     @output = output
     @config = config
-    @paths = paths
+    # temporary for ease of transition
+    @config[:paths] ||= paths
   end
 
   def run
@@ -15,12 +16,12 @@ class MasterRunner
     @config[:pre_test_callback].each do |callback|
       callback.call(@output)
     end
-    if @paths.empty?
+    if @config[:paths].empty?
       unless DohTest.require_paths(@config[:glob], ['.'])
         DohTest.require_paths(@config[:glob], [@config[:root]])
       end
     else
-      DohTest.require_paths(@config[:glob], @paths)
+      DohTest.require_paths(@config[:glob], @config[:paths])
     end
 
     srand(@config[:seed])
