@@ -5,7 +5,9 @@ module DohTest
 
 class MasterRunner
   def initialize(output, config, paths)
-    @output, @config, @paths = output, config, paths
+    @output = output
+    @config = config
+    @paths = paths
   end
 
   def run
