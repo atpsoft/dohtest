@@ -57,8 +57,8 @@ def add_default_config_values
 end
 
 def configure(start_path)
-  load_configuration_files(start_path)
   add_default_config_values
+  load_configuration_files(start_path)
 end
 
 end
