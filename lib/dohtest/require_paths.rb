@@ -1,6 +1,10 @@
 module DohTest
 extend self
 
+def require_test_file(path)
+  require(path)
+end
+
 def require_paths(glob, paths)
   retval = false
   expanded_paths = paths.map {|path| File.expand_path(path) }
@@ -8,11 +12,11 @@ def require_paths(glob, paths)
     if File.directory?(path)
       Dir.glob(File.join(path, '**', glob)).each do |filename|
         retval = true
-        require(filename)
+        DohTest.require_test_file(filename)
       end
     else
       retval = true
-      require(path)
+      DohTest.require_test_file(path)
     end
   end
   return retval
