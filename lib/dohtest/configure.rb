@@ -27,8 +27,11 @@ def load_configuration_files(start_path)
   else
     start_directory = File.dirname(start_path)
   end
+
   root_directory = find_root(start_directory)
-  raise "unable to determine root directory to run tests from" unless root_directory
+  if !root_directory
+    raise "unable to determine root directory to run tests from"
+  end
   DohTest.config[:root] = root_directory
 
   Doh.find_root_from_path(root_directory)
