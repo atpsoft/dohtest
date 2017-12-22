@@ -11,17 +11,22 @@ class MasterRunner
 
   def run
     start_time = Time.now
-    @config[:pre_test_callback].each do |callback|
-      callback.call(@output)
-    end
+    srand(@config[:seed])
+    @output.run_begin(@config)
+
     paths = @config[:paths]
     if paths.empty?
       paths = ['.']
     end
-    DohTest.require_paths(@config[:glob], paths)
+    if !DohTest.require_paths(@config[:glob], paths)
+      @output.no_tests_found
+      return 1
+    end
 
-    srand(@config[:seed])
-    @output.run_begin(@config)
+    @config[:pre_test_callback].each do |callback|
+      callback.call(@output)
+    end
+
     total_problems = 0
     # sort them to be the same order no matter what (different machines were returning different results)
     TestGroup.descendants.sort{|a,b|a.to_s<=>b.to_s}.shuffle.each do |group_class|

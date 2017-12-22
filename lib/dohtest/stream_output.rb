@@ -127,6 +127,10 @@ class StreamOutput
     @assertions_passed += 1
   end
 
+  def no_tests_found
+    @err_ios.puts("\nno tests found")
+  end
+
 private
   def colorize(type, msg)
     return msg if @no_color
