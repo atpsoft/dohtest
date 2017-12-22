@@ -11,6 +11,7 @@ def require_paths(glob, paths)
         require(filename)
       end
     else
+      retval = true
       require(path)
     end
   end
