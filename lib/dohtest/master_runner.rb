@@ -14,13 +14,11 @@ class MasterRunner
     @config[:pre_test_callback].each do |callback|
       callback.call(@output)
     end
-    if @config[:paths].empty?
-      unless DohTest.require_paths(@config[:glob], ['.'])
-        DohTest.require_paths(@config[:glob], [@config[:root]])
-      end
-    else
-      DohTest.require_paths(@config[:glob], @config[:paths])
+    paths = @config[:paths]
+    if paths.empty?
+      paths = ['.']
     end
+    DohTest.require_paths(@config[:glob], paths)
 
     srand(@config[:seed])
     @output.run_begin(@config)
