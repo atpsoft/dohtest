@@ -20,7 +20,7 @@ def find_root(start_directory, max_tries = 20)
   nil
 end
 
-def load_configuration_files(start_path)
+def load_configuration_file(start_path)
   start_path = File.expand_path(start_path || '.')
   if File.directory?(start_path)
     start_directory = start_path
@@ -61,7 +61,7 @@ end
 
 def configure(start_path)
   add_default_config_values
-  load_configuration_files(start_path)
+  load_configuration_file(start_path)
 end
 
 end
