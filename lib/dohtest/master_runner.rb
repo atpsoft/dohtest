@@ -1,5 +1,5 @@
 require 'dohtest/group_runner'
-require 'dohtest/require_paths'
+require 'dohtest/load_test_files'
 
 module DohTest
 
@@ -14,14 +14,12 @@ class MasterRunner
     srand(@config[:seed])
     @output.run_begin(@config)
 
-    paths = @config[:paths]
-    if paths.empty?
-      paths = ['.']
-    end
-    if !DohTest.require_paths(@config[:glob], paths)
+    if @config[:test_files].empty?
       @output.no_tests_found
       return 1
     end
+
+    DohTest.load_test_files(@config[:test_files])
 
     @config[:pre_test_callback].each do |callback|
       callback.call(@output)

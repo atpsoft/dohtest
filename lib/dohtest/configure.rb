@@ -1,4 +1,5 @@
 require 'dohroot'
+require 'dohtest/find_files'
 
 module DohTest
 extend self
@@ -59,8 +60,17 @@ def add_default_config_values
   DohTest.config[:seed] ||= (Time.new.to_f * 1000).to_i
 end
 
+def set_test_files
+  paths = DohTest.config[:paths]
+  if paths.empty?
+    paths = ['.']
+  end
+  DohTest.config[:test_files] = DohTest.find_test_files(DohTest.config[:glob], paths)
+end
+
 def configure(start_path)
   add_default_config_values
+  set_test_files
   load_configuration_file(start_path)
 end
 

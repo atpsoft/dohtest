@@ -16,9 +16,11 @@ class StreamOutput
   end
 
   def run_begin(config)
-    @config = config
-    @std_ios.puts "running tests with config: #{config}"
+    display_config = config.dup
+    display_config.delete(:test_files)
+    @std_ios.puts "running tests with config: #{display_config}"
 
+    @config = config
     has_terminal = @std_ios.tty?
     @no_color = !has_terminal || @config[:no_color]
     @verbose = (has_terminal && !@config[:quiet]) || @config[:verbose]
