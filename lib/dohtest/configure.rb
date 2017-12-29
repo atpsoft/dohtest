@@ -65,7 +65,7 @@ def set_test_files
   if paths.empty?
     paths = ['.']
   end
-  DohTest.config[:test_files] = DohTest.find_test_files(DohTest.config[:glob], paths)
+  DohTest.config[:test_files] = DohTest.find_files(DohTest.config[:glob], paths)
 end
 
 def configure(start_path)
