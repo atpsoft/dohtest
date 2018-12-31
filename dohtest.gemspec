@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.2.0'
   s.add_runtime_dependency 'dohroot', '~> 0.1'
   s.add_runtime_dependency 'term-ansicolor', '~> 1'
-  s.authors = ['Makani Mason', 'Kem Mason']
+  s.authors = ['ATPSoft']
   s.bindir = 'bin'
   s.homepage = 'https://github.com/atpsoft/dohtest'
   s.license = 'MIT'
