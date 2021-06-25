@@ -13,7 +13,9 @@ def find_root(start_directory, max_tries = 20)
   curr_directory = start_directory
   max_tries.times do
     return nil if curr_directory == '/'
-    if File.directory?(File.join(curr_directory, 'test')) || File.exist?(File.join(curr_directory, 'dohtest.rb'))
+    if (File.exist?(File.join(curr_directory, 'dohroot')) ||
+        File.directory?(File.join(curr_directory, 'test')) ||
+        File.exist?(File.join(curr_directory, 'dohtest.rb')))
       return curr_directory
     end
     curr_directory = File.expand_path(File.join(curr_directory, '..'))
