@@ -26,19 +26,30 @@ class MasterRunner
     end
 
     total_problems = 0
+    total_assertions = 0
+    callbacks_succeeded = true
     # sort them to be the same order no matter what (different machines were returning different results)
     TestGroup.descendants.sort{|a,b|a.to_s<=>b.to_s}.shuffle.each do |group_class|
       runner = GroupRunner.new(group_class, @output, @config)
       brink_hit = runner.run
       total_problems += runner.total_problems
+      total_assertions += runner.total_assertions
       break if brink_hit
     end
     @config[:post_all_callback].each do |proc|
       if !proc.call(total_problems)
+        callbacks_succeeded = false
         @output.callback_failed(proc.inspect)
       end
     end
     @output.run_end(Time.now - start_time)
+
+    success = (total_assertions > 0) && (total_problems == 0) && callbacks_succeeded
+    if success
+      return 0
+    else
+      return 1
+    end
   end
 end
 

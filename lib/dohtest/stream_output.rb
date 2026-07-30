@@ -72,9 +72,6 @@ class StreamOutput
     msg = "#{error_str}; #{group_str}; #{test_str}; #{assertion_str}"
     msg = colorize(:success, msg) if success
     @std_ios.puts msg
-
-    # this is to generate an exit code; true translates to 0, false to 1
-    success
   end
 
   def group_begin(group_name)

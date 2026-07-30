@@ -187,6 +187,10 @@ class GroupRunner
   def total_problems
     @error_count + @assertions_failed
   end
+
+  def total_assertions
+    return @assertions_passed + @assertions_failed
+  end
 end
 
 end
