@@ -4,7 +4,7 @@ require 'dohtest/backtrace_parser'
 
 module DohTest
 
-class TestBacktraceParser < MiniTest::Test
+class TestBacktraceParser < Minitest::Test
   def create_single_stack
     retval = []
     retval << "/Users/somebody/dohtest/lib/doh/test/assertions.rb:10:in `assert'"
