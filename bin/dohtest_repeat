@@ -3,3 +3,4 @@
 cmd = "dohtest #{ARGV.join(' ')}"
 while(system(cmd)) do
 end
+exit($?.exitstatus || 1)
