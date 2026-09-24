@@ -20,7 +20,7 @@ class TestGroup
   end
 
   # expected arguments:
-  # one or more exception classes (or modules)
+  # one or more exception classes (or modules); a class matches only exactly, not a subclass
   # then optionally a regex the exception's message must match
   # then optionally a failure message to display if the assertion fails
   def assert_raises(*expected)

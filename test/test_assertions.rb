@@ -87,6 +87,17 @@ class TestAssertions < Minitest::Test
     assert_equal(ArgumentError, failure.actual.class)
   end
 
+  class RaisesSubclass < DohTest::TestGroup
+    def test_raises
+      assert_raises(StandardError) { raise ArgumentError }
+    end
+  end
+
+  def test_raises_subclass
+    failure = run_failed_group(RaisesSubclass)
+    assert_equal(ArgumentError, failure.actual.class)
+  end
+
   class RaisesNothing < DohTest::TestGroup
     def test_raises
       assert_raises(ArgumentError) { nil }
