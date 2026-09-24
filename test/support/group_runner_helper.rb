@@ -11,11 +11,10 @@ module GroupRunnerHelper
     end
   end
 
-  def run_group(group_klass, grepstr = nil)
+  def run_group(group_klass, config_overrides = {})
     @group_klass = group_klass
     @output = CaptureOutput.new
-    config = if grepstr then DohTest.config.merge({:grep => grepstr}) else nil end
-    @runner = GroupRunner.new(@group_klass, @output, config)
+    @runner = GroupRunner.new(@group_klass, @output, DohTest.config.merge(config_overrides))
     @runner.run
     @events = @output.events
     assert_equal({:name => 'group_begin', :group_name => @group_klass.to_s}, @events.shift)

@@ -148,22 +148,22 @@ class TestGroupRunner < Minitest::Test
   end
 
   def test_grepping_with_pass_grep_blah
-    run_group(GreppingWithPass, 'blah')
+    run_group(GreppingWithPass, :grep => 'blah')
     verify_event({:tests_ran => 4, :tests_skipped => 1, :assertions_passed => 13, :assertions_failed => 0}, @events.last)
   end
 
   def test_grepping_with_pass_grep_blee
-    run_group(GreppingWithPass, 'blee')
+    run_group(GreppingWithPass, :grep => 'blee')
     verify_event({:tests_ran => 2, :tests_skipped => 3, :assertions_passed => 6, :assertions_failed => 0}, @events.last)
   end
 
   def test_grepping_with_pass_grep_bloo
-    run_group(GreppingWithPass, 'bloo')
+    run_group(GreppingWithPass, :grep => 'bloo')
     verify_event({:tests_ran => 1, :tests_skipped => 4, :assertions_passed => 5, :assertions_failed => 0}, @events.last)
   end
 
   def test_grepping_with_pass_grep_zzz
-    run_group(GreppingWithPass, 'zzz')
+    run_group(GreppingWithPass, :grep => 'zzz')
     verify_event({:tests_ran => 0, :tests_skipped => 5, :assertions_passed => 0, :assertions_failed => 0}, @events.last)
   end
 end
