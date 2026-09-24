@@ -53,7 +53,7 @@ class CaptureOutput
 
 private
   def add(args)
-    args[:name] = caller.first.rpartition(':in ').last[1..-2]
+    args[:name] = caller_locations(1, 1).first.base_label
     @events.push(args)
   end
 end
