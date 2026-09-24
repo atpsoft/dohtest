@@ -35,8 +35,8 @@ class CaptureOutput
     add(:group_name => group_name, :test_name => test_name, :error => error, :seed => seed)
   end
 
-  def assertion_failed(group_name, test_name, failure)
-    add(:group_name => group_name, :test_name => test_name, :failure => failure)
+  def assertion_failed(group_name, test_name, failure, seed)
+    add(:group_name => group_name, :test_name => test_name, :failure => failure, :seed => seed)
   end
 
   def assertion_passed(group_name, test_name)

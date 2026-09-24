@@ -120,6 +120,23 @@ class TestGroupRunner < Minitest::Test
     assert(@group_klass.class_variable_get(:@@ran_after))
   end
 
+  class AssertionFailureGroup < DohTest::TestGroup
+    def test_failed_assertion
+      assert_equal(1, 2)
+    end
+  end
+
+  def test_assertion_failure
+    run_group(AssertionFailureGroup)
+    assert_equal(4, @events.size)
+    assert_equal('test_begin', @events.shift[:name])
+    event = @events.shift
+    assert_equal('assertion_failed', event[:name])
+    assert_equal(:equal, event[:failure].assert)
+    assert_equal('test_end', @events.shift[:name])
+    verify_event({:tests_ran => 1, :tests_skipped => 0, :assertions_passed => 0, :assertions_failed => 1}, @events.shift)
+  end
+
   class GreppingWithPass < DohTest::TestGroup
     def test_blah
       assert(true)
