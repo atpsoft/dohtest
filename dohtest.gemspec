@@ -18,4 +18,9 @@ Gem::Specification.new do |s|
   s.test_files = FileList["{test}/**/*.rb"].to_a
   s.executables = FileList["{bin}/**/*"].to_a.collect { |elem| elem.slice(4..-1) }
   s.files = FileList["{bin,lib,test}/**/*"].to_a
+
+  unreadable = s.files.select { |f| File.stat(f).mode & 0o004 == 0 }
+  unless unreadable.empty?
+    raise "not world-readable: #{unreadable.join(', ')}"
+  end
 end
