@@ -168,14 +168,25 @@ private
   end
 
   def display_raises_failure(failure)
+    classes = failure.expected.fetch(:classes)
+    message_regex = failure.expected.fetch(:message_regex)
+
+    if classes.size == 1
+      expected_str = classes.first.to_s
+    else
+      expected_str = "one of #{classes.join(',')}"
+    end
+
+    if message_regex
+      expected_str += " with message matching #{message_regex.inspect}"
+    end
     if failure.actual
-      expected_str = if (failure.expected.size == 1) then failure.expected.first else "one of #{failure.expected.join(',')}" end
       @err_ios.puts colorize(:info, "expected: #{expected_str}; actual: #{failure.actual.class}: #{failure.actual.message}")
       DohTest::BacktraceParser.new(failure.actual.backtrace).relevant_stack.each do |path, line|
         @err_ios.puts "#{path}:#{line}"
       end
     else
-      @err_ios.puts colorize(:info, "expected: #{failure.expected}, but no exception was raised")
+      @err_ios.puts colorize(:info, "expected: #{expected_str}, but no exception was raised")
     end
   end
 
