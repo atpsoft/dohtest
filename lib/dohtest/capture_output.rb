@@ -47,6 +47,10 @@ class CaptureOutput
     add(:proc_name => proc_name)
   end
 
+  def no_tests_found
+    add({})
+  end
+
 private
   def add(args)
     args[:name] = caller.first.rpartition(':in ').last[1..-2]
