@@ -43,6 +43,10 @@ class CaptureOutput
     add(:group_name => group_name, :test_name => test_name)
   end
 
+  def callback_failed(proc_name)
+    add(:proc_name => proc_name)
+  end
+
 private
   def add(args)
     args[:name] = caller.first.rpartition(':in ').last[1..-2]

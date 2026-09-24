@@ -122,6 +122,22 @@ class TestGroupRunner < Minitest::Test
     verify_event({:tests_ran => 1, :tests_skipped => 0, :assertions_passed => 0, :assertions_failed => 1}, @events.shift)
   end
 
+  class CallbackFailureGroup < DohTest::TestGroup
+    def test_pass
+      assert(true)
+    end
+  end
+
+  def test_callback_failure
+    run_group(CallbackFailureGroup, :pre_group_callback => [proc { false }])
+    assert_equal(5, @events.size)
+    assert_equal('callback_failed', @events.shift[:name])
+    assert_equal('test_begin', @events.shift[:name])
+    assert_equal('assertion_passed', @events.shift[:name])
+    assert_equal('test_end', @events.shift[:name])
+    verify_event({:tests_ran => 1, :tests_skipped => 0, :assertions_passed => 1, :assertions_failed => 0}, @events.shift)
+  end
+
   class GreppingWithPass < DohTest::TestGroup
     def test_blah
       assert(true)
